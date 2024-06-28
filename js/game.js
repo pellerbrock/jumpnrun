@@ -7,7 +7,7 @@ backgroundImage.src = 'assets/background.png'; // Hintergrundbild
 
 let hero = {
     x: 50,
-    y: canvas.height - 100,
+    y: canvas.height - 200,
     width: 50,
     height: 50,
     speed: 5,
@@ -17,7 +17,7 @@ let hero = {
 };
 
 let platforms = [
-    { x: 0, y: canvas.height - 80, width: 800, height: 20 },
+    { x: 0, y: canvas.height - 60, width: 800, height: 20 },
     { x: 350, y: canvas.height - 200, width: 100, height: 20 }
 ];
 
