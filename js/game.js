@@ -18,7 +18,7 @@ let hero = {
 
 let platforms = [
     { x: 0, y: canvas.height - 60, width: 800, height: 20 },
-    { x: 350, y: canvas.height - 200, width: 100, height: 20 }
+    { x: 350, y: canvas.height - 100, width: 100, height: 10 }
 ];
 
 let goal = {
@@ -60,9 +60,9 @@ function drawPlatforms() {
         if (index === 0) {
             ctx.fillStyle = 'rgba(0, 0, 0, 0)';
         } else if (index === 1) {
-            ctx.fillStyle = '#ADD8E6';
+            ctx.fillStyle = '#070439';
         } else {
-            ctx.fillStyle = '#654321';
+            ctx.fillStyle = '#070439';
         }
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
