@@ -4,6 +4,9 @@ const ctx = canvas.getContext('2d');
 let heroImage = new Image();
 heroImage.src = 'assets/hero.png';
 
+let backgroundImage = new Image();
+backgroundImage.src = 'assets/background.png'; // Hintergrundbild
+
 let hero = {
     x: 50,
     y: canvas.height - 100,
@@ -15,21 +18,40 @@ let hero = {
     jumping: false
 };
 
-// Zwei Plattformen definieren
+// Plattformen definieren
 let platforms = [
-    { x: 200, y: canvas.height - 100, width: 100, height: 20 }, // Erste Plattform tiefer
-    { x: 350, y: canvas.height - 200, width: 100, height: 20 }  // Zweite Plattform
+    { x: 200, y: canvas.height - 100, width: 100, height: 20 },
+    { x: 350, y: canvas.height - 200, width: 100, height: 20 }
 ];
+
+// Ziel definieren
+let goal = {
+    x: canvas.width - 100,
+    y: canvas.height - 150,
+    width: 50,
+    height: 50
+};
+
+let goalReached = false;
 
 function drawHero() {
     ctx.drawImage(heroImage, hero.x, hero.y, hero.width, hero.height);
 }
 
+function drawBackground() {
+    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+}
+
 function drawPlatforms() {
-    ctx.fillStyle = '#654321'; // Braune Farbe für die Plattformen
+    ctx.fillStyle = '#654321';
     platforms.forEach(platform => {
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
+}
+
+function drawGoal() {
+    ctx.fillStyle = '#FFD700'; // Goldene Farbe für das Ziel
+    ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
 }
 
 function clear() {
@@ -42,11 +64,11 @@ function update() {
 
     // Gravitations- und Boden-Kollisionsprüfung
     if (hero.y + hero.height < canvas.height) {
-        hero.dy += 1; // Gravitationskraft
+        hero.dy += 1;
     } else {
         hero.dy = 0;
         hero.jumping = false;
-        hero.y = canvas.height - hero.height; // Held auf dem Boden halten
+        hero.y = canvas.height - hero.height;
     }
 
     // Kollisionsprüfung mit Plattformen
@@ -57,9 +79,17 @@ function update() {
             hero.x < platform.x + platform.width) {
             hero.dy = 0;
             hero.jumping = false;
-            hero.y = platform.y - hero.height; // Auf die Plattform setzen
+            hero.y = platform.y - hero.height;
         }
     });
+
+    // Ziel-Kollisionsprüfung
+    if (hero.x + hero.width > goal.x &&
+        hero.x < goal.x + goal.width &&
+        hero.y + hero.height > goal.y &&
+        hero.y < goal.y + goal.height) {
+        goalReached = true;
+    }
 }
 
 function moveHero(e) {
@@ -78,17 +108,30 @@ function stopHero(e) {
 
 function jump() {
     if (!hero.jumping) {
-        hero.dy = -15; // Sprunghöhe
+        hero.dy = -15;
         hero.jumping = true;
     }
 }
 
+function displayMessage(message) {
+    ctx.fillStyle = 'black';
+    ctx.font = '24px Arial';
+    ctx.fillText(message, canvas.width / 2 - 50, canvas.height / 2);
+}
+
 function gameLoop() {
     clear();
+    drawBackground();
     drawHero();
-    drawPlatforms(); // Plattformen zeichnen
+    drawPlatforms();
+    drawGoal();
     update();
-    requestAnimationFrame(gameLoop);
+    
+    if (goalReached) {
+        displayMessage("You Win!");
+    } else {
+        requestAnimationFrame(gameLoop);
+    }
 }
 
 document.addEventListener('keydown', moveHero);
