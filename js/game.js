@@ -51,10 +51,10 @@ function drawPlatforms() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Fully transparent
         } else if (index === 1) {
             // Make the second platform light blue
-            ctx.fillStyle = '#ADD8E6'; // Light blue color
+            ctx.fillStyle = '#A85EFA'; // Light blue color
         } else {
             // Default color for any other platforms
-            ctx.fillStyle = '#654321'; // Default brown color
+            ctx.fillStyle = '#070439 '; // Default brown color
         }
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
