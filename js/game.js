@@ -51,7 +51,7 @@ function drawPlatforms() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Fully transparent
         } else if (index === 1) {
             // Make the second platform light blue
-            ctx.fillStyle = '#A85EFA'; // Light blue color
+            ctx.fillStyle = '#070439'; // Light blue color
         } else {
             // Default color for any other platforms
             ctx.fillStyle = '#070439 '; // Default brown color
