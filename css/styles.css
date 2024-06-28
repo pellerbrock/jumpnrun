@@ -1,19 +1,7 @@
 /* styles.css */
 body {
     margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #f0f0f0;
     overflow: hidden;
-}
-
-.canvas-container {
-    position: relative;
-    width: 800px;  /* Fixiere die Breite */
-    height: 400px; /* Fixiere die Höhe */
-    background: #f0f0f0;
 }
 
 canvas {
@@ -38,8 +26,8 @@ canvas {
     margin: 0 10px;
     cursor: pointer;
     border: 2px solid transparent;
-    width: 100px;  /* Verkleinere die Bilder */
-    height: auto;
+    width: 100px;  /* Füge diese Zeile hinzu */
+    height: auto;  /* Füge diese Zeile hinzu */
 }
 
 .character-selection img:hover {
