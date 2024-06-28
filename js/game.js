@@ -9,7 +9,7 @@ backgroundImage.src = 'assets/background.png'; // Hintergrundbild
 
 let hero = {
     x: 50,
-    y: canvas.height - 400,
+    y: canvas.height - 100,
     width: 50,
     height: 50,
     speed: 5,
@@ -20,7 +20,7 @@ let hero = {
 
 // Plattformen definieren
 let platforms = [
-    { x: 0, y: canvas.height - 90, width: 500, height: 20 },
+    { x: 200, y: canvas.height - 100, width: 100, height: 20 },
     { x: 350, y: canvas.height - 200, width: 100, height: 20 }
 ];
 
@@ -43,8 +43,17 @@ function drawBackground() {
 }
 
 function drawPlatforms() {
-    ctx.fillStyle = '#654321';
-    platforms.forEach(platform => {
+    platforms.forEach((platform, index) => {
+        if (index === 0) {
+            // Make the first platform invisible
+            ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Fully transparent
+        } else if (index === 1) {
+            // Make the second platform light blue
+            ctx.fillStyle = '#ADD8E6'; // Light blue color
+        } else {
+            // Default color for any other platforms
+            ctx.fillStyle = '#654321'; // Default brown color
+        }
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
 }
