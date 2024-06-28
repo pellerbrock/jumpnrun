@@ -17,7 +17,7 @@ let hero = {
 };
 
 let platforms = [
-    { x: 0, y: canvas.height - 100, width: 100, height: 20 },
+    { x: 200, y: canvas.height - 100, width: 100, height: 20 },
     { x: 350, y: canvas.height - 200, width: 100, height: 20 }
 ];
 
@@ -102,57 +102,4 @@ function update() {
 
     if (hero.x + hero.width > goal.x &&
         hero.x < goal.x + goal.width &&
-        hero.y + hero.height > goal.y &&
-        hero.y < goal.y + goal.height) {
-        goalReached = true;
-    }
-}
-
-function moveHero(e) {
-    if (e.key === 'ArrowRight') {
-        hero.dx = hero.speed;
-    } else if (e.key === 'ArrowLeft') {
-        hero.dx = -hero.speed;
-    }
-}
-
-function stopHero(e) {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        hero.dx = 0;
-    }
-}
-
-function jump() {
-    if (!hero.jumping) {
-        hero.dy = -15;
-        hero.jumping = true;
-    }
-}
-
-function displayMessage(message) {
-    ctx.fillStyle = 'black';
-    ctx.font = '24px Arial';
-    ctx.fillText(message, canvas.width / 2 - 50, canvas.height / 2);
-}
-
-function gameLoop() {
-    if (!gameStarted) return;  // Verhindert, dass das Spiel läuft, bevor es gestartet wird
-    clear();
-    drawBackground();
-    drawHero();
-    drawPlatforms();
-    drawGoal();
-    update();
-    
-    if (goalReached) {
-        displayMessage("You Win!");
-    } else {
-        requestAnimationFrame(gameLoop);
-    }
-}
-
-document.addEventListener('keydown', moveHero);
-document.addEventListener('keyup', stopHero);
-document.addEventListener('keydown', (e) => {
-    if (e.key === ' ') jump();
-});
+        hero.y + hero
