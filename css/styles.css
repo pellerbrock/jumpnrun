@@ -26,6 +26,8 @@ canvas {
     margin: 0 10px;
     cursor: pointer;
     border: 2px solid transparent;
+    width: 100px;  /* Füge diese Zeile hinzu */
+    height: auto;  /* Füge diese Zeile hinzu */
 }
 
 .character-selection img:hover {
