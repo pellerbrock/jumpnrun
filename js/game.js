@@ -20,7 +20,7 @@ let hero = {
 
 // Plattformen definieren
 let platforms = [
-    { x: 200, y: canvas.height - 90, width: 500, height: 20 },
+    { x: 0, y: canvas.height - 90, width: 500, height: 20 },
     { x: 350, y: canvas.height - 200, width: 100, height: 20 }
 ];
 
