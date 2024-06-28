@@ -35,9 +35,15 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
     if (e.target.tagName === 'IMG') {
         let selectedCharacter = e.target.getAttribute('data-character');
         heroImage.src = 'assets/' + selectedCharacter;
-        document.getElementById('characterSelection').style.display = 'none';
-        gameStarted = true;
-        gameLoop();
+        heroImage.onload = () => {  // Warte, bis das Bild geladen ist
+            console.log("Hero image loaded successfully.");
+            document.getElementById('characterSelection').style.display = 'none';
+            gameStarted = true;
+            gameLoop();
+        };
+        heroImage.onerror = () => {  // Fehlerbehandlung, falls das Bild nicht geladen werden kann
+            console.error("Error loading hero image.");
+        };
     }
 });
 
@@ -101,3 +107,52 @@ function update() {
         goalReached = true;
     }
 }
+
+function moveHero(e) {
+    if (e.key === 'ArrowRight') {
+        hero.dx = hero.speed;
+    } else if (e.key === 'ArrowLeft') {
+        hero.dx = -hero.speed;
+    }
+}
+
+function stopHero(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        hero.dx = 0;
+    }
+}
+
+function jump() {
+    if (!hero.jumping) {
+        hero.dy = -15;
+        hero.jumping = true;
+    }
+}
+
+function displayMessage(message) {
+    ctx.fillStyle = 'black';
+    ctx.font = '24px Arial';
+    ctx.fillText(message, canvas.width / 2 - 50, canvas.height / 2);
+}
+
+function gameLoop() {
+    if (!gameStarted) return;  // Verhindert, dass das Spiel läuft, bevor es gestartet wird
+    clear();
+    drawBackground();
+    drawHero();
+    drawPlatforms();
+    drawGoal();
+    update();
+    
+    if (goalReached) {
+        displayMessage("You Win!");
+    } else {
+        requestAnimationFrame(gameLoop);
+    }
+}
+
+document.addEventListener('keydown', moveHero);
+document.addEventListener('keyup', stopHero);
+document.addEventListener('keydown', (e) => {
+    if (e.key === ' ') jump();
+});
