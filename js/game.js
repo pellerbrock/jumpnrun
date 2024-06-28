@@ -2,14 +2,12 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 let heroImage = new Image();
-heroImage.src = 'assets/hero.png';
-
 let backgroundImage = new Image();
 backgroundImage.src = 'assets/background.png'; // Hintergrundbild
 
 let hero = {
     x: 50,
-    y: canvas.height - 300,
+    y: canvas.height - 100,
     width: 50,
     height: 50,
     speed: 5,
@@ -18,15 +16,11 @@ let hero = {
     jumping: false
 };
 
-// Plattformen definieren
 let platforms = [
-    { x: 0, y: canvas.height - 90, width: 800, height: 50 },
-    { x: 350, y: canvas.height - 200, width: 100, height: 10 },
-    { x: 200, y: canvas.height - 120, width: 60, height: 10 },
-    { x: 550, y: canvas.height - 150, width: 60, height: 10 }
+    { x: 200, y: canvas.height - 100, width: 100, height: 20 },
+    { x: 350, y: canvas.height - 200, width: 100, height: 20 }
 ];
 
-// Ziel definieren
 let goal = {
     x: canvas.width - 100,
     y: canvas.height - 150,
@@ -35,6 +29,17 @@ let goal = {
 };
 
 let goalReached = false;
+let gameStarted = false;
+
+document.getElementById('characterSelection').addEventListener('click', (e) => {
+    if (e.target.tagName === 'IMG') {
+        let selectedCharacter = e.target.getAttribute('data-character');
+        heroImage.src = 'assets/' + selectedCharacter;
+        document.getElementById('characterSelection').style.display = 'none';
+        gameStarted = true;
+        gameLoop();
+    }
+});
 
 function drawHero() {
     ctx.drawImage(heroImage, hero.x, hero.y, hero.width, hero.height);
@@ -47,21 +52,18 @@ function drawBackground() {
 function drawPlatforms() {
     platforms.forEach((platform, index) => {
         if (index === 0) {
-            // Make the first platform invisible
-            ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Fully transparent
+            ctx.fillStyle = 'rgba(0, 0, 0, 0)';
         } else if (index === 1) {
-            // Make the second platform light blue
-            ctx.fillStyle = '#070439'; // Light blue color
+            ctx.fillStyle = '#ADD8E6';
         } else {
-            // Default color for any other platforms
-            ctx.fillStyle = '#070439 '; // Default brown color
+            ctx.fillStyle = '#654321';
         }
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
 }
 
 function drawGoal() {
-    ctx.fillStyle = '#FFD700'; // Goldene Farbe für das Ziel
+    ctx.fillStyle = '#FFD700';
     ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
 }
 
@@ -73,7 +75,6 @@ function update() {
     hero.x += hero.dx;
     hero.y += hero.dy;
 
-    // Gravitations- und Boden-Kollisionsprüfung
     if (hero.y + hero.height < canvas.height) {
         hero.dy += 1;
     } else {
@@ -82,7 +83,6 @@ function update() {
         hero.y = canvas.height - hero.height;
     }
 
-    // Kollisionsprüfung mit Plattformen
     platforms.forEach(platform => {
         if (hero.y + hero.height >= platform.y &&
             hero.y + hero.height <= platform.y + platform.height &&
@@ -94,7 +94,6 @@ function update() {
         }
     });
 
-    // Ziel-Kollisionsprüfung
     if (hero.x + hero.width > goal.x &&
         hero.x < goal.x + goal.width &&
         hero.y + hero.height > goal.y &&
@@ -102,53 +101,3 @@ function update() {
         goalReached = true;
     }
 }
-
-function moveHero(e) {
-    if (e.key === 'ArrowRight') {
-        hero.dx = hero.speed;
-    } else if (e.key === 'ArrowLeft') {
-        hero.dx = -hero.speed;
-    }
-}
-
-function stopHero(e) {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        hero.dx = 0;
-    }
-}
-
-function jump() {
-    if (!hero.jumping) {
-        hero.dy = -15;
-        hero.jumping = true;
-    }
-}
-
-function displayMessage(message) {
-    ctx.fillStyle = 'black';
-    ctx.font = '24px Arial';
-    ctx.fillText(message, canvas.width / 2 - 50, canvas.height / 2);
-}
-
-function gameLoop() {
-    clear();
-    drawBackground();
-    drawHero();
-    drawPlatforms();
-    drawGoal();
-    update();
-    
-    if (goalReached) {
-        displayMessage("You Win!");
-    } else {
-        requestAnimationFrame(gameLoop);
-    }
-}
-
-document.addEventListener('keydown', moveHero);
-document.addEventListener('keyup', stopHero);
-document.addEventListener('keydown', (e) => {
-    if (e.key === ' ') jump();
-});
-
-gameLoop();

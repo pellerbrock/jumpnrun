@@ -1,12 +1,33 @@
+/* styles.css */
 body {
+    margin: 0;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    background: #f0f0f0;
+}
+
+.character-selection {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    background-color: #87CEEB; /* Himmelblau */
+    background: #f0f0f0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
 }
 
-canvas {
-    border: 1px solid #000;
+.character-selection img {
+    margin: 0 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.character-selection img:hover {
+    border: 2px solid blue;
 }
