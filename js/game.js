@@ -20,7 +20,7 @@ let platforms = [
     { x: 0, y: canvas.height - 60, width: 800, height: 20 },
     { x: 350, y: canvas.height - 100, width: 100, height: 10 },
     { x: 550, y: canvas.height - 130, width: 60, height: 10 },
-    { x: 200, y: canvas.height - 180, width: 60, height: 10 }
+    { x: 200, y: canvas.height - 100, width: 60, height: 10 }
 ];
 
 let goal = {
