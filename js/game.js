@@ -15,21 +15,21 @@ let hero = {
     jumping: false
 };
 
-// Plattform-Daten
-let platform = {
-    x: 200,
-    y: canvas.height - 150,
-    width: 100,
-    height: 20
-};
+// Zwei Plattformen definieren
+let platforms = [
+    { x: 200, y: canvas.height - 100, width: 100, height: 20 }, // Erste Plattform tiefer
+    { x: 350, y: canvas.height - 200, width: 100, height: 20 }  // Zweite Plattform
+];
 
 function drawHero() {
     ctx.drawImage(heroImage, hero.x, hero.y, hero.width, hero.height);
 }
 
-function drawPlatform() {
-    ctx.fillStyle = '#654321'; // Braune Farbe für die Plattform
-    ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+function drawPlatforms() {
+    ctx.fillStyle = '#654321'; // Braune Farbe für die Plattformen
+    platforms.forEach(platform => {
+        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+    });
 }
 
 function clear() {
@@ -46,17 +46,20 @@ function update() {
     } else {
         hero.dy = 0;
         hero.jumping = false;
+        hero.y = canvas.height - hero.height; // Held auf dem Boden halten
     }
 
-    // Plattform-Kollisionsprüfung
-    if (hero.y + hero.height >= platform.y &&
-        hero.y + hero.height <= platform.y + platform.height &&
-        hero.x + hero.width > platform.x &&
-        hero.x < platform.x + platform.width) {
-        hero.dy = 0;
-        hero.jumping = false;
-        hero.y = platform.y - hero.height; // Auf die Plattform setzen
-    }
+    // Kollisionsprüfung mit Plattformen
+    platforms.forEach(platform => {
+        if (hero.y + hero.height >= platform.y &&
+            hero.y + hero.height <= platform.y + platform.height &&
+            hero.x + hero.width > platform.x &&
+            hero.x < platform.x + platform.width) {
+            hero.dy = 0;
+            hero.jumping = false;
+            hero.y = platform.y - hero.height; // Auf die Plattform setzen
+        }
+    });
 }
 
 function moveHero(e) {
@@ -83,7 +86,7 @@ function jump() {
 function gameLoop() {
     clear();
     drawHero();
-    drawPlatform(); // Plattform zeichnen
+    drawPlatforms(); // Plattformen zeichnen
     update();
     requestAnimationFrame(gameLoop);
 }
