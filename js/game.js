@@ -90,8 +90,8 @@ function update() {
     }
 
     platforms.forEach(platform => {
-        if (hero.y + hero.height >= platform.y &&
-            hero.y + hero.height <= platform.y + platform.height &&
+        if (hero.y + hero.height > platform.y &&    // Hero is falling onto the platform
+            hero.y + hero.height - hero.dy <= platform.y &&    // Check previous position above the platform
             hero.x + hero.width > platform.x &&
             hero.x < platform.x + platform.width) {
             hero.dy = 0;
