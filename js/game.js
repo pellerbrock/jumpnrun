@@ -4,17 +4,20 @@ const backgroundMusic = document.getElementById('backgroundMusic');
 
 let heroImage = new Image();
 let backgroundImage = new Image();
+let enemyImage = new Image();
 backgroundImage.src = 'assets/background.png';
+enemyImage.src = 'assets/enemy_character.png';
 
 let hero = {
     x: 50,
     y: canvas.height - 200,
     width: 50,
     height: 50,
-    speed: 5,
+    speed: 6,
     dx: 0,
     dy: 0,
-    jumping: false
+    jumping: false,
+    lives: 3 // Anzahl der Leben
 };
 
 let scrollOffset = 0;
@@ -27,6 +30,9 @@ const levels = [
             { x: 400, y: canvas.height - 210, width: 60, height: 10, visible: true },
             { x: 600, y: canvas.height - 190, width: 60, height: 10, visible: true }
         ],
+        enemies: [
+            { x: 500, y: canvas.height - 180, width: 50, height: 50, originalY: canvas.height - 180, dy: 1 }
+        ],
         goal: { x: 750, y: canvas.height - 360, width: 50, height: 50 }
     },
     {
@@ -38,47 +44,13 @@ const levels = [
             { x: 700, y: canvas.height - 340, width: 60, height: 10, visible: true },
             { x: 850, y: canvas.height - 320, width: 60, height: 10, visible: true }
         ],
+        enemies: [
+            { x: 270, y: canvas.height - 230, width: 50, height: 50, originalY: canvas.height - 230, dy: 1 },
+            { x: 780, y: canvas.height - 350, width: 50, height: 50, originalY: canvas.height - 350, dy: 1 }
+        ],
         goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 }
-    },
-    {
-        platforms: [
-            { x: 0, y: canvas.height - 115, width: 1200, height: 20, visible: false },
-            { x: 100, y: canvas.height - 170, width: 100, height: 10, visible: true },
-            { x: 300, y: canvas.height - 270, width: 100, height: 10, visible: true },
-            { x: 500, y: canvas.height - 200, width: 60, height: 10, visible: true },
-            { x: 700, y: canvas.height - 250, width: 60, height: 10, visible: true },
-            { x: 900, y: canvas.height - 220, width: 60, height: 10, visible: true },
-            { x: 1100, y: canvas.height - 160, width: 60, height: 10, visible: true }
-        ],
-        goal: { x: 1150, y: canvas.height - 350, width: 50, height: 50 }
-    },
-    {
-        platforms: [
-            { x: 0, y: canvas.height - 115, width: 1400, height: 20, visible: false },
-            { x: 150, y: canvas.height - 170, width: 100, height: 10, visible: true },
-            { x: 350, y: canvas.height - 120, width: 100, height: 10, visible: true },
-            { x: 550, y: canvas.height - 200, width: 60, height: 10, visible: true },
-            { x: 750, y: canvas.height - 180, width: 60, height: 10, visible: true },
-            { x: 950, y: canvas.height - 260, width: 60, height: 10, visible: true },
-            { x: 1150, y: canvas.height - 340, width: 60, height: 10, visible: true },
-            { x: 1250, y: canvas.height - 300, width: 60, height: 10, visible: true }
-        ],
-        goal: { x: 1350, y: canvas.height - 350, width: 50, height: 50 }
-    },
-    {
-        platforms: [
-            { x: 0, y: canvas.height - 115, width: 1600, height: 20, visible: false },
-            { x: 100, y: canvas.height - 170, width: 100, height: 10, visible: true },
-            { x: 300, y: canvas.height - 220, width: 100, height: 10, visible: true },
-            { x: 500, y: canvas.height - 300, width: 60, height: 10, visible: true },
-            { x: 700, y: canvas.height - 350, width: 60, height: 10, visible: true },
-            { x: 900, y: canvas.height - 220, width: 60, height: 10, visible: true },
-            { x: 1100, y: canvas.height - 300, width: 60, height: 10, visible: true },
-            { x: 1300, y: canvas.height - 380, width: 60, height: 10, visible: true },
-            { x: 1500, y: canvas.height - 360, width: 60, height: 10, visible: true }
-        ],
-        goal: { x: 1550, y: canvas.height - 420, width: 50, height: 50 }
     }
+    // Weitere Level hier definieren...
 ];
 
 let currentLevelIndex = 0;
@@ -91,14 +63,14 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
     if (e.target.tagName === 'IMG') {
         let selectedCharacter = e.target.getAttribute('data-character');
         heroImage.src = 'assets/' + selectedCharacter;
-        heroImage.onload = () => {  // Warte, bis das Bild geladen ist
+        heroImage.onload = () => {  
             console.log("Hero image loaded successfully.");
             document.getElementById('characterSelection').style.display = 'none';
             gameStarted = true;
-            backgroundMusic.play(); // Hintergrundmusik abspielen
+            backgroundMusic.play();
             gameLoop();
         };
-        heroImage.onerror = () => {  // Fehlerbehandlung, falls das Bild nicht geladen werden kann
+        heroImage.onerror = () => {  
             console.error("Error loading hero image.");
         };
     }
@@ -111,8 +83,6 @@ function drawHero() {
 function drawBackground() {
     const backgroundWidth = backgroundImage.width;
     const backgroundHeight = backgroundImage.height;
-
-    // Hintergrundbilder wiederholen
     const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
 
     for (let i = 0; i <= repeatCount; i++) {
@@ -123,11 +93,17 @@ function drawBackground() {
 function drawPlatforms() {
     currentLevel.platforms.forEach(platform => {
         if (platform.visible) {
-            ctx.fillStyle = '#070439'; // Farbe für sichtbare Plattformen
+            ctx.fillStyle = '#070439';
         } else {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Farbe für unsichtbare Plattformen
+            ctx.fillStyle = 'rgba(0, 0, 0, 0)';
         }
         ctx.fillRect(platform.x - scrollOffset, platform.y, platform.width, platform.height);
+    });
+}
+
+function drawEnemies() {
+    currentLevel.enemies.forEach(enemy => {
+        ctx.drawImage(enemyImage, enemy.x - scrollOffset, enemy.y, enemy.width, enemy.height);
     });
 }
 
@@ -135,9 +111,15 @@ function drawGoal() {
     let goal = currentLevel.goal;
     ctx.fillStyle = '#FFD700';
     ctx.fillRect(goal.x - scrollOffset, goal.y, goal.width, goal.height);
-    ctx.fillStyle = 'black'; // Textfarbe
-    ctx.font = '20px Arial'; // Textfont und Größe
-    ctx.fillText('Goal!', goal.x - scrollOffset + 5, goal.y + 30); // Positioniere den Text innerhalb des Zielkastens
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText('Goal!', goal.x - scrollOffset + 5, goal.y + 30);
+}
+
+function drawLives() {
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText('Lives: ' + hero.lives, 10, 30);
 }
 
 function clear() {
@@ -157,13 +139,32 @@ function update() {
     }
 
     currentLevel.platforms.forEach(platform => {
-        if (hero.y + hero.height > platform.y &&    // Hero is falling onto the platform
-            hero.y + hero.height - hero.dy <= platform.y &&    // Check previous position above the platform
+        if (hero.y + hero.height > platform.y &&
+            hero.y + hero.height - hero.dy <= platform.y &&
             hero.x + hero.width > platform.x - scrollOffset &&
             hero.x < platform.x + platform.width - scrollOffset) {
             hero.dy = 0;
             hero.jumping = false;
             hero.y = platform.y - hero.height;
+        }
+    });
+
+    currentLevel.enemies.forEach(enemy => {
+        enemy.y += enemy.dy;
+        if (enemy.y > enemy.originalY + 10 || enemy.y < enemy.originalY - 10) {
+            enemy.dy *= -1;
+        }
+        
+        if (hero.x + hero.width > enemy.x - scrollOffset &&
+            hero.x < enemy.x + enemy.width - scrollOffset &&
+            hero.y + hero.height > enemy.y &&
+            hero.y < enemy.y + enemy.height) {
+            hero.lives--;
+            if (hero.lives <= 0) {
+                resetToCharacterSelection();
+            } else {
+                resetHeroPosition();
+            }
         }
     });
 
@@ -175,7 +176,6 @@ function update() {
         goalReached = true;
     }
 
-    // Scroll-Logik
     if (hero.x > canvas.width / 2 && hero.dx > 0) {
         scrollOffset += hero.dx;
         hero.x = canvas.width / 2;
@@ -184,11 +184,27 @@ function update() {
         hero.x = canvas.width / 2;
     }
 
-    // Verhindere das Zurückscrollen über den Anfang des Levels hinaus
     if (scrollOffset < 0) {
         scrollOffset = 0;
         hero.x += hero.dx;
     }
+}
+
+function resetHeroPosition() {
+    hero.x = 50;
+    hero.y = canvas.height - 200;
+    hero.dx = 0;
+    hero.dy = 0;
+    scrollOffset = 0;
+}
+
+function resetToCharacterSelection() {
+    gameStarted = false;
+    hero.lives = 3;
+    currentLevelIndex = 0;
+    currentLevel = levels[currentLevelIndex];
+    resetHeroPosition();
+    document.getElementById('characterSelection').style.display = 'flex';
 }
 
 function moveHero(e) {
@@ -222,31 +238,28 @@ function nextLevel() {
     currentLevelIndex++;
     if (currentLevelIndex >= levels.length) {
         alert('You completed all levels!');
-        currentLevelIndex = 0; // Zurück zum ersten Level oder Spiel beenden
+        currentLevelIndex = 0;
     }
     currentLevel = levels[currentLevelIndex];
-    hero.x = 50;
-    hero.y = canvas.height - 200;
-    hero.dx = 0;
-    hero.dy = 0;
-    scrollOffset = 0; // Scroll-Offset zurücksetzen
+    resetHeroPosition();
     goalReached = false;
     gameLoop();
 }
 
 function gameLoop() {
-    if (!gameStarted) return;  // Verhindert, dass das Spiel läuft, bevor es gestartet wird
+    if (!gameStarted) return;
     clear();
     drawBackground();
     drawHero();
     drawPlatforms();
+    drawEnemies();
     drawGoal();
+    drawLives();
     update();
 
     if (goalReached) {
         displayMessage("You Win!");
-        backgroundMusic.pause(); // Hintergrundmusik stoppen, wenn das Ziel erreicht ist
-        setTimeout(nextLevel, 2000); // Nach 2 Sekunden zum nächsten Level wechseln
+        setTimeout(nextLevel, 2000);
     } else {
         requestAnimationFrame(gameLoop);
     }

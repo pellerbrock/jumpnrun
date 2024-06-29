@@ -1,4 +1,3 @@
-/* styles.css */
 body {
     margin: 0;
     overflow: hidden;
@@ -11,7 +10,7 @@ body {
 canvas {
     display: block;
     background: #f0f0f0;
-    border: 1px solid #000; /* Optional, um die Canvas-Grenzen zu sehen */
+    border: 1px solid #000;
 }
 
 .character-selection {
