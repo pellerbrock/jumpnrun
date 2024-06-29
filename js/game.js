@@ -37,19 +37,19 @@ let messageTimer = 0;
 const levels = [
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 800, height: 20, visible: false },
+            { x: 0, y: canvas.height - 115, width: 1800, height: 20, visible: false },
             { x: 200, y: canvas.height - 230, width: 100, height: 10, visible: true },
             { x: 400, y: canvas.height - 210, width: 60, height: 10, visible: true },
             { x: 600, y: canvas.height - 190, width: 60, height: 10, visible: true }
         ],
         enemies: [
-            { x: 500, y: canvas.height - 180, width: 50, height: 50, originalY: canvas.height - 180, dy: 1 }
+            { x: 500, y: canvas.height - 180, width: 50, height: 50, originalY: canvas.height - 180, dy: 0.5 }
         ],
         goal: { x: 750, y: canvas.height - 360, width: 50, height: 50 }
     },
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 1000, height: 20, visible: false },
+            { x: 0, y: canvas.height - 115, width: 3000, height: 20, visible: false },
             { x: 150, y: canvas.height - 230, width: 100, height: 10, visible: true },
             { x: 350, y: canvas.height - 190, width: 100, height: 10, visible: true },
             { x: 500, y: canvas.height - 270, width: 60, height: 10, visible: true },
@@ -58,7 +58,7 @@ const levels = [
         ],
         enemies: [
             { x: 270, y: canvas.height - 230, width: 50, height: 50, originalY: canvas.height - 230, dy: 1 },
-            { x: 780, y: canvas.height - 350, width: 50, height: 50, originalY: canvas.height - 350, dy: 1 }
+            { x: 780, y: canvas.height - 350, width: 50, height: 50, originalY: canvas.height - 350, dy: 0.5 }
         ],
         goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 }
     }
