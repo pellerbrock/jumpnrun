@@ -2,7 +2,15 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const backgroundMusic = document.getElementById('backgroundMusic');
 
-let heroImage = new Image();
+let heroImages = {
+    idle: new Image(),
+    walk1: new Image(),
+    walk2: new Image(),
+    jump: new Image(),
+    currentImage: new Image(),
+    selectedCharacter: 'hero1'
+};
+
 let backgroundImage = new Image();
 let enemyImage = new Image();
 backgroundImage.src = 'assets/background.png';
@@ -17,10 +25,14 @@ let hero = {
     dx: 0,
     dy: 0,
     jumping: false,
-    lives: 3 // Anzahl der Leben
+    lives: 3,
+    walkFrame: 0,
+    walkTimer: 0
 };
 
 let scrollOffset = 0;
+let showMessage = false;
+let messageTimer = 0;
 
 const levels = [
     {
@@ -50,7 +62,6 @@ const levels = [
         ],
         goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 }
     }
-    // Weitere Level hier definieren...
 ];
 
 let currentLevelIndex = 0;
@@ -62,22 +73,32 @@ let gameStarted = false;
 document.getElementById('characterSelection').addEventListener('click', (e) => {
     if (e.target.tagName === 'IMG') {
         let selectedCharacter = e.target.getAttribute('data-character');
-        heroImage.src = 'assets/' + selectedCharacter;
-        heroImage.onload = () => {  
-            console.log("Hero image loaded successfully.");
-            document.getElementById('characterSelection').style.display = 'none';
-            gameStarted = true;
-            backgroundMusic.play();
-            gameLoop();
-        };
-        heroImage.onerror = () => {  
-            console.error("Error loading hero image.");
-        };
+        heroImages.selectedCharacter = selectedCharacter;
+        loadHeroImages(selectedCharacter);
+        document.getElementById('characterSelection').style.display = 'none';
+        gameStarted = true;
+        backgroundMusic.play();
+        gameLoop();
     }
 });
 
+function loadHeroImages(character) {
+    heroImages.idle.src = `assets/${character}_idle.png`;
+    heroImages.walk1.src = `assets/${character}_walk1.png`;
+    heroImages.walk2.src = `assets/${character}_walk2.png`;
+    heroImages.jump.src = `assets/${character}_jump.png`;
+    heroImages.currentImage = heroImages.idle;
+
+    heroImages.idle.onload = () => {
+        console.log("Hero images loaded successfully.");
+    };
+    heroImages.idle.onerror = () => {
+        console.error("Error loading hero images.");
+    };
+}
+
 function drawHero() {
-    ctx.drawImage(heroImage, hero.x, hero.y, hero.width, hero.height);
+    ctx.drawImage(heroImages.currentImage, hero.x, hero.y, hero.width, hero.height);
 }
 
 function drawBackground() {
@@ -122,6 +143,19 @@ function drawLives() {
     ctx.fillText('Lives: ' + hero.lives, 10, 30);
 }
 
+function drawDeathMessage() {
+    if (showMessage) {
+        ctx.fillStyle = 'red';
+        ctx.font = '24px Arial';
+        ctx.fillText('Du bist gestorben!', canvas.width / 2 - 70, canvas.height / 2);
+        messageTimer++;
+        if (messageTimer > 60) {
+            showMessage = false;
+            messageTimer = 0;
+        }
+    }
+}
+
 function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
@@ -160,6 +194,7 @@ function update() {
             hero.y + hero.height > enemy.y &&
             hero.y < enemy.y + enemy.height) {
             hero.lives--;
+            showMessage = true; // Display death message
             if (hero.lives <= 0) {
                 resetToCharacterSelection();
             } else {
@@ -187,6 +222,26 @@ function update() {
     if (scrollOffset < 0) {
         scrollOffset = 0;
         hero.x += hero.dx;
+    }
+
+    updateHeroAnimation();
+}
+
+function updateHeroAnimation() {
+    if (hero.jumping) {
+        heroImages.currentImage = heroImages.jump;
+    } else if (hero.dx !== 0) {
+        hero.walkTimer++;
+        if (hero.walkTimer % 10 === 0) {
+            hero.walkFrame = (hero.walkFrame + 1) % 2;
+        }
+        if (hero.walkFrame === 0) {
+            heroImages.currentImage = heroImages.walk1;
+        } else {
+            heroImages.currentImage = heroImages.walk2;
+        }
+    } else {
+        heroImages.currentImage = heroImages.idle;
     }
 }
 
@@ -255,6 +310,7 @@ function gameLoop() {
     drawEnemies();
     drawGoal();
     drawLives();
+    drawDeathMessage(); // Draw death message if needed
     update();
 
     if (goalReached) {
