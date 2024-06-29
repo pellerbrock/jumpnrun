@@ -7,14 +7,18 @@ let heroImages = {
     walk1: new Image(),
     walk2: new Image(),
     jump: new Image(),
-    currentImage: new Image(),
-    selectedCharacter: 'hero1'
+    attack: new Image()
 };
 
 let backgroundImage = new Image();
 let enemyImage = new Image();
+let bossImage = new Image();
+let coinImage = new Image();
+
 backgroundImage.src = 'assets/background.png';
 enemyImage.src = 'assets/enemy_character.png';
+bossImage.src = 'assets/boss_character.png';
+coinImage.src = 'assets/coin.png';
 
 let hero = {
     x: 50,
@@ -25,14 +29,14 @@ let hero = {
     dx: 0,
     dy: 0,
     jumping: false,
-    lives: 3,
-    walkFrame: 0,
-    walkTimer: 0
+    lives: 3, // Anzahl der Leben
+    coinsCollected: 0,
+    currentImage: heroImages.idle,
+    walkCounter: 0,
+    isAttacking: false
 };
 
 let scrollOffset = 0;
-let showMessage = false;
-let messageTimer = 0;
 
 const levels = [
     {
@@ -43,24 +47,44 @@ const levels = [
             { x: 600, y: canvas.height - 190, width: 60, height: 10, visible: true }
         ],
         enemies: [
-            { x: 500, y: canvas.height - 180, width: 50, height: 50, originalY: canvas.height - 180, dy: 0.5 }
+            { x: 500, y: canvas.height - 220, width: 50, height: 50, originalY: canvas.height - 220, dy: 0.5 }
         ],
-        goal: { x: 750, y: canvas.height - 360, width: 50, height: 50 }
+        goal: { x: 750, y: canvas.height - 360, width: 50, height: 50 },
+        coins: [
+            { x: 350, y: canvas.height - 350, width: 20, height: 20, collected: false },
+            { x: 550, y: canvas.height - 330, width: 20, height: 20, collected: false }
+        ]
     },
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 3000, height: 20, visible: false },
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 150, y: canvas.height - 230, width: 100, height: 10, visible: true },
             { x: 350, y: canvas.height - 190, width: 100, height: 10, visible: true },
+            { x: 350, y: canvas.height - 390, width: 100, height: 10, visible: true },
             { x: 500, y: canvas.height - 270, width: 60, height: 10, visible: true },
+            { x: 580, y: canvas.height - 470, width: 90, height: 10, visible: true },
             { x: 700, y: canvas.height - 340, width: 60, height: 10, visible: true },
-            { x: 850, y: canvas.height - 320, width: 60, height: 10, visible: true }
+            { x: 850, y: canvas.height - 320, width: 60, height: 10, visible: true },
+            { x: 730, y: canvas.height - 470, width: 180, height: 10, visible: true }
         ],
         enemies: [
-            { x: 270, y: canvas.height - 230, width: 50, height: 50, originalY: canvas.height - 230, dy: 1 },
-            { x: 780, y: canvas.height - 350, width: 50, height: 50, originalY: canvas.height - 350, dy: 0.5 }
+            { x: 270, y: canvas.height - 230, width: 50, height: 50, originalY: canvas.height - 230, dy: 0.5 },
+            { x: 780, y: canvas.height - 420, width: 50, height: 50, originalY: canvas.height - 420, dy: 0.3 }
         ],
-        goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 }
+        goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 },
+        coins: [
+            { x: 400, y: canvas.height - 250, width: 20, height: 20, collected: false },
+            { x: 620, y: canvas.height - 330, width: 20, height: 20, collected: false }
+        ],
+        boss: {
+            x: 825,
+            y: canvas.height - 570,
+            width: 100,
+            height: 100,
+            originalY: canvas.height - 570,
+            dy: 0,
+            health: 5
+        }
     }
 ];
 
@@ -73,32 +97,26 @@ let gameStarted = false;
 document.getElementById('characterSelection').addEventListener('click', (e) => {
     if (e.target.tagName === 'IMG') {
         let selectedCharacter = e.target.getAttribute('data-character');
-        heroImages.selectedCharacter = selectedCharacter;
-        loadHeroImages(selectedCharacter);
-        document.getElementById('characterSelection').style.display = 'none';
-        gameStarted = true;
-        backgroundMusic.play();
-        gameLoop();
+        heroImages.idle.src = `assets/${selectedCharacter}_idle.png`;
+        heroImages.walk1.src = `assets/${selectedCharacter}_walk1.png`;
+        heroImages.walk2.src = `assets/${selectedCharacter}_walk2.png`;
+        heroImages.jump.src = `assets/${selectedCharacter}_jump.png`;
+        heroImages.attack.src = `assets/${selectedCharacter}_attack.png`;
+        heroImages.idle.onload = () => {
+            console.log("Hero images loaded successfully.");
+            document.getElementById('characterSelection').style.display = 'none';
+            gameStarted = true;
+            backgroundMusic.play();
+            gameLoop();
+        };
+        heroImages.idle.onerror = () => {
+            console.error("Error loading hero images.");
+        };
     }
 });
 
-function loadHeroImages(character) {
-    heroImages.idle.src = `assets/${character}_idle.png`;
-    heroImages.walk1.src = `assets/${character}_walk1.png`;
-    heroImages.walk2.src = `assets/${character}_walk2.png`;
-    heroImages.jump.src = `assets/${character}_jump.png`;
-    heroImages.currentImage = heroImages.idle;
-
-    heroImages.idle.onload = () => {
-        console.log("Hero images loaded successfully.");
-    };
-    heroImages.idle.onerror = () => {
-        console.error("Error loading hero images.");
-    };
-}
-
 function drawHero() {
-    ctx.drawImage(heroImages.currentImage, hero.x, hero.y, hero.width, hero.height);
+    ctx.drawImage(hero.currentImage, hero.x, hero.y, hero.width, hero.height);
 }
 
 function drawBackground() {
@@ -128,6 +146,27 @@ function drawEnemies() {
     });
 }
 
+function drawCoins() {
+    currentLevel.coins.forEach(coin => {
+        if (!coin.collected) {
+            ctx.drawImage(coinImage, coin.x - scrollOffset, coin.y, coin.width, coin.height);
+        }
+    });
+}
+
+function drawBoss() {
+    if (!currentLevel.bossDefeated && currentLevel.boss) {
+        let boss = currentLevel.boss;
+        ctx.drawImage(bossImage, boss.x - scrollOffset, boss.y, boss.width, boss.height);
+
+        // Draw boss health bar
+        ctx.fillStyle = 'red';
+        ctx.fillRect(boss.x - scrollOffset, boss.y - 10, boss.width, 5);
+        ctx.fillStyle = 'green';
+        ctx.fillRect(boss.x - scrollOffset, boss.y - 10, boss.width * (boss.health / 5), 5);
+    }
+}
+
 function drawGoal() {
     let goal = currentLevel.goal;
     ctx.fillStyle = '#FFD700';
@@ -143,17 +182,10 @@ function drawLives() {
     ctx.fillText('Lives: ' + hero.lives, 10, 30);
 }
 
-function drawDeathMessage() {
-    if (showMessage) {
-        ctx.fillStyle = 'red';
-        ctx.font = '24px Arial';
-        ctx.fillText('Du bist gestorben!', canvas.width / 2 - 70, canvas.height / 2);
-        messageTimer++;
-        if (messageTimer > 60) {
-            showMessage = false;
-            messageTimer = 0;
-        }
-    }
+function drawCoinsCollected() {
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText('Coins: ' + hero.coinsCollected, 10, 60);
 }
 
 function clear() {
@@ -169,6 +201,7 @@ function update() {
     } else {
         hero.dy = 0;
         hero.jumping = false;
+        hero.currentImage = heroImages.idle;
         hero.y = canvas.height - hero.height;
     }
 
@@ -188,13 +221,13 @@ function update() {
         if (enemy.y > enemy.originalY + 10 || enemy.y < enemy.originalY - 10) {
             enemy.dy *= -1;
         }
-        
+
         if (hero.x + hero.width > enemy.x - scrollOffset &&
             hero.x < enemy.x + enemy.width - scrollOffset &&
             hero.y + hero.height > enemy.y &&
             hero.y < enemy.y + enemy.height) {
             hero.lives--;
-            showMessage = true; // Display death message
+            displayMessage("Du bist gestorben!");
             if (hero.lives <= 0) {
                 resetToCharacterSelection();
             } else {
@@ -203,12 +236,65 @@ function update() {
         }
     });
 
+    currentLevel.coins.forEach(coin => {
+        if (!coin.collected &&
+            hero.x + hero.width > coin.x - scrollOffset &&
+            hero.x < coin.x + coin.width - scrollOffset &&
+            hero.y + hero.height > coin.y &&
+            hero.y < coin.y + coin.height) {
+            coin.collected = true;
+            hero.coinsCollected++;
+        }
+    });
+
+    if (currentLevel.boss && !currentLevel.bossDefeated) {
+        let boss = currentLevel.boss;
+        boss.y += boss.dy;
+        if (boss.y > boss.originalY + 10 || boss.y < boss.originalY - 10) {
+            boss.dy *= -1;
+        }
+
+        if (hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset - 50 &&
+            hero.x < boss.x + boss.width - scrollOffset + 50 &&
+            hero.y + hero.height > boss.y - 20 &&
+            hero.y < boss.y + boss.height + 20) {
+                boss.health -= 0.1; // Angriffsschaden verringert
+                if (boss.health <= 0) {
+                    currentLevel.bossDefeated = true;
+                }
+        }
+
+        if (!hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset &&
+            hero.x < boss.x + boss.width - scrollOffset &&
+            hero.y + hero.height > boss.y &&
+            hero.y < boss.y + boss.height) {
+            hero.lives--;
+            displayMessage("Du bist gestorben!");
+            if (hero.lives <= 0) {
+                resetToCharacterSelection();
+            } else {
+                resetHeroPosition();
+            }
+        }
+    }
+
     let goal = currentLevel.goal;
     if (hero.x + hero.width > goal.x - scrollOffset &&
         hero.x < goal.x + goal.width - scrollOffset &&
         hero.y + hero.height > goal.y &&
         hero.y < goal.y + goal.height) {
         goalReached = true;
+    }
+
+    if (hero.dx !== 0 && !hero.jumping && !hero.isAttacking) {
+        hero.walkCounter++;
+        if (hero.walkCounter % 10 < 5) {  // Adjusted walk animation speed
+            hero.currentImage = heroImages.walk1;
+        } else {
+            hero.currentImage = heroImages.walk2;
+        }
+    } else if (!hero.jumping && !hero.isAttacking) {
+        hero.currentImage = heroImages.idle;
     }
 
     if (hero.x > canvas.width / 2 && hero.dx > 0) {
@@ -223,26 +309,6 @@ function update() {
         scrollOffset = 0;
         hero.x += hero.dx;
     }
-
-    updateHeroAnimation();
-}
-
-function updateHeroAnimation() {
-    if (hero.jumping) {
-        heroImages.currentImage = heroImages.jump;
-    } else if (hero.dx !== 0) {
-        hero.walkTimer++;
-        if (hero.walkTimer % 10 === 0) {
-            hero.walkFrame = (hero.walkFrame + 1) % 2;
-        }
-        if (hero.walkFrame === 0) {
-            heroImages.currentImage = heroImages.walk1;
-        } else {
-            heroImages.currentImage = heroImages.walk2;
-        }
-    } else {
-        heroImages.currentImage = heroImages.idle;
-    }
 }
 
 function resetHeroPosition() {
@@ -250,12 +316,14 @@ function resetHeroPosition() {
     hero.y = canvas.height - 200;
     hero.dx = 0;
     hero.dy = 0;
+    hero.isAttacking = false;
     scrollOffset = 0;
 }
 
 function resetToCharacterSelection() {
     gameStarted = false;
     hero.lives = 3;
+    hero.coinsCollected = 0;
     currentLevelIndex = 0;
     currentLevel = levels[currentLevelIndex];
     resetHeroPosition();
@@ -280,6 +348,18 @@ function jump() {
     if (!hero.jumping) {
         hero.dy = -15;
         hero.jumping = true;
+        hero.currentImage = heroImages.jump;
+    }
+}
+
+function attack() {
+    if (!hero.isAttacking) {
+        hero.isAttacking = true;
+        hero.currentImage = heroImages.attack;
+        setTimeout(() => {
+            hero.isAttacking = false;
+            hero.currentImage = heroImages.idle;
+        }, 500);
     }
 }
 
@@ -308,9 +388,11 @@ function gameLoop() {
     drawHero();
     drawPlatforms();
     drawEnemies();
+    drawCoins();
+    drawBoss();
     drawGoal();
     drawLives();
-    drawDeathMessage(); // Draw death message if needed
+    drawCoinsCollected();
     update();
 
     if (goalReached) {
@@ -325,4 +407,7 @@ document.addEventListener('keydown', moveHero);
 document.addEventListener('keyup', stopHero);
 document.addEventListener('keydown', (e) => {
     if (e.key === ' ') jump();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'x') attack();
 });
