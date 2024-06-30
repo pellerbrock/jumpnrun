@@ -1,3 +1,4 @@
+// game.js
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const backgroundMusic = document.getElementById('backgroundMusic');
@@ -94,6 +95,25 @@ let currentLevel = levels[currentLevelIndex];
 let goalReached = false;
 let gameStarted = false;
 
+document.getElementById('playButton').addEventListener('click', () => {
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('characterSelection').style.display = 'flex';
+});
+
+document.getElementById('controlsButton').addEventListener('click', () => {
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('controlsScreen').style.display = 'flex';
+});
+
+document.getElementById('quitButton').addEventListener('click', () => {
+    window.close();
+});
+
+document.getElementById('backButton').addEventListener('click', () => {
+    document.getElementById('controlsScreen').style.display = 'none';
+    document.getElementById('startScreen').style.display = 'flex';
+});
+
 document.getElementById('characterSelection').addEventListener('click', (e) => {
     if (e.target.tagName === 'IMG') {
         let selectedCharacter = e.target.getAttribute('data-character');
@@ -105,6 +125,7 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
         heroImages.idle.onload = () => {
             console.log("Hero images loaded successfully.");
             document.getElementById('characterSelection').style.display = 'none';
+            canvas.style.display = 'block';
             gameStarted = true;
             backgroundMusic.play();
             gameLoop();
@@ -254,14 +275,14 @@ function update() {
             boss.dy *= -1;
         }
 
-        if (hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset - 50 &&
-            hero.x < boss.x + boss.width - scrollOffset + 50 &&
+        if (hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset - 20 &&
+            hero.x < boss.x + boss.width - scrollOffset + 20 &&
             hero.y + hero.height > boss.y - 20 &&
             hero.y < boss.y + boss.height + 20) {
-                boss.health -= 0.1; // Angriffsschaden verringert
-                if (boss.health <= 0) {
-                    currentLevel.bossDefeated = true;
-                }
+            boss.health--;
+            if (boss.health <= 0) {
+                currentLevel.bossDefeated = true;
+            }
         }
 
         if (!hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset &&
@@ -288,7 +309,7 @@ function update() {
 
     if (hero.dx !== 0 && !hero.jumping && !hero.isAttacking) {
         hero.walkCounter++;
-        if (hero.walkCounter % 10 < 5) {  // Adjusted walk animation speed
+        if (hero.walkCounter % 20 < 10) {  // Adjusted walk animation speed
             hero.currentImage = heroImages.walk1;
         } else {
             hero.currentImage = heroImages.walk2;

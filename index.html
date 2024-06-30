@@ -7,8 +7,23 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="800"></canvas>
-    <div class="character-selection" id="characterSelection">
+    <canvas id="gameCanvas" width="800" height="800" style="display:none;"></canvas>
+    <div class="start-screen" id="startScreen">
+        <h1>One Dimensional</h1>
+        <div class="menu">
+            <button id="playButton">Spielen</button>
+            <button id="controlsButton">Tastenbelegung</button>
+            <button id="quitButton">Beenden</button>
+        </div>
+    </div>
+    <div class="controls-screen" id="controlsScreen" style="display:none;">
+        <h2>Tastenbelegung</h2>
+        <p>Pfeiltasten: Bewegen</p>
+        <p>Leertaste: Springen</p>
+        <p>X: Angreifen</p>
+        <button id="backButton">Zurück</button>
+    </div>
+    <div class="character-selection" id="characterSelection" style="display:none;">
         <img src="assets/hero1_idle.png" data-character="hero1" alt="Character 1">
         <img src="assets/hero2_idle.png" data-character="hero2" alt="Character 2">
         <img src="assets/hero3_idle.png" data-character="hero3" alt="Character 3">
