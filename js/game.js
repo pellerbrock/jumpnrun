@@ -2,6 +2,11 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const backgroundMusic = document.getElementById('backgroundMusic');
+const backToMenuButton = document.createElement('button');
+backToMenuButton.innerText = "Zurück zum Menü";
+backToMenuButton.id = "backToMenuButton";
+backToMenuButton.style.display = 'none';
+document.body.appendChild(backToMenuButton);
 
 let heroImages = {
     idle: new Image(),
@@ -126,6 +131,7 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
             console.log("Hero images loaded successfully.");
             document.getElementById('characterSelection').style.display = 'none';
             canvas.style.display = 'block';
+            backToMenuButton.style.display = 'block';
             gameStarted = true;
             backgroundMusic.play();
             gameLoop();
@@ -135,6 +141,24 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
         };
     }
 });
+
+backToMenuButton.addEventListener('click', () => {
+    resetToMainMenu();
+});
+
+function resetToMainMenu() {
+    gameStarted = false;
+    hero.lives = 3;
+    hero.coinsCollected = 0;
+    currentLevelIndex = 0;
+    currentLevel = levels[currentLevelIndex];
+    resetHeroPosition();
+    canvas.style.display = 'none';
+    backToMenuButton.style.display = 'none';
+    document.getElementById('startScreen').style.display = 'flex';
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+}
 
 function drawHero() {
     ctx.drawImage(hero.currentImage, hero.x, hero.y, hero.width, hero.height);
@@ -309,7 +333,7 @@ function update() {
 
     if (hero.dx !== 0 && !hero.jumping && !hero.isAttacking) {
         hero.walkCounter++;
-        if (hero.walkCounter % 20 < 10) {  // Adjusted walk animation speed
+        if (hero.walkCounter % 30 < 15) {  // Adjusted walk animation speed
             hero.currentImage = heroImages.walk1;
         } else {
             hero.currentImage = heroImages.walk2;
