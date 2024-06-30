@@ -333,7 +333,7 @@ function update() {
 
     if (hero.dx !== 0 && !hero.jumping && !hero.isAttacking) {
         hero.walkCounter++;
-        if (hero.walkCounter % 30 < 15) {  // Adjusted walk animation speed
+        if (hero.walkCounter % 20 < 10) {  // Adjusted walk animation speed
             hero.currentImage = heroImages.walk1;
         } else {
             hero.currentImage = heroImages.walk2;
