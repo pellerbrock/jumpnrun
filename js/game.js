@@ -1,4 +1,3 @@
-// game.js
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const backgroundMusic = document.getElementById('backgroundMusic');
@@ -28,10 +27,10 @@ coinImage.src = 'assets/coin.png';
 
 let hero = {
     x: 50,
-    y: canvas.height - 200,
+    y: canvas.height - 170,
     width: 50,
     height: 50,
-    speed: 6,
+    speed: 5,
     dx: 0,
     dy: 0,
     jumping: false,
@@ -48,18 +47,28 @@ const levels = [
     {
         platforms: [
             { x: 0, y: canvas.height - 115, width: 1800, height: 20, visible: false },
-            { x: 200, y: canvas.height - 230, width: 100, height: 10, visible: true },
-            { x: 400, y: canvas.height - 210, width: 60, height: 10, visible: true },
-            { x: 600, y: canvas.height - 190, width: 60, height: 10, visible: true }
+            { x: 700, y: canvas.height - 230, width: 100, height: 10, visible: true },
+            { x: 900, y: canvas.height - 210, width: 60, height: 10, visible: true },
+            { x: 1100, y: canvas.height - 190, width: 60, height: 10, visible: true }
         ],
         enemies: [
-            { x: 500, y: canvas.height - 220, width: 50, height: 50, originalY: canvas.height - 220, dy: 0.5 }
+            { x: 1000, y: canvas.height - 220, width: 50, height: 50, originalY: canvas.height - 220, dy: 0.5 }
         ],
-        goal: { x: 750, y: canvas.height - 360, width: 50, height: 50 },
+        goal: { x: 1250, y: canvas.height - 360, width: 50, height: 50 },
         coins: [
-            { x: 350, y: canvas.height - 350, width: 20, height: 20, collected: false },
-            { x: 550, y: canvas.height - 330, width: 20, height: 20, collected: false }
-        ]
+            { x: 850, y: canvas.height - 350, width: 20, height: 20, collected: false },
+            { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
+        ],
+        boss: {
+            x: 825,
+            y: canvas.height - 170,
+            width: 50,
+            height: 50,
+            originalY: canvas.height - 570,
+            dy: 0,
+            health: 5,
+            intro: true
+        }
     },
     {
         platforms: [
@@ -84,9 +93,9 @@ const levels = [
         ],
         boss: {
             x: 825,
-            y: canvas.height - 570,
-            width: 100,
-            height: 100,
+            y: canvas.height - 520,
+            width: 50,
+            height: 50,
             originalY: canvas.height - 570,
             dy: 0,
             health: 5
@@ -134,7 +143,11 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
             backToMenuButton.style.display = 'block';
             gameStarted = true;
             backgroundMusic.play();
-            gameLoop();
+            if (currentLevelIndex === 0 && currentLevel.boss && currentLevel.boss.intro) {
+                animateBossIntro();
+            } else {
+                gameLoop();
+            }
         };
         heroImages.idle.onerror = () => {
             console.error("Error loading hero images.");
@@ -237,6 +250,76 @@ function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function animateBossIntro() {
+    const boss = currentLevel.boss;
+    boss.x = canvas.width;
+    const targetX = canvas.width - 200;
+    let bossState = 'entering';
+
+    function drawSpeechBubble(ctx, x, y, width, height, radius, text) {
+        let r = radius;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + width, y, x + width, y + height, r);
+        ctx.arcTo(x + width, y + height, x, y + height, r);
+        ctx.arcTo(x, y + height, x, y, r);
+        ctx.arcTo(x, y, x + width, y, r);
+        ctx.closePath();
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = 'black';
+        ctx.font = '16px Arial';
+        ctx.fillText(text, x + 10, y + 25);
+
+        // Draw the tail of the speech bubble
+        ctx.beginPath();
+        ctx.moveTo(x + width / 2 - 10, y + height);
+        ctx.lineTo(x + width / 2 + 10, y + height);
+        ctx.lineTo(x + width / 2, y + height + 10);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function animate() {
+        clear();
+        drawBackground();
+        drawPlatforms();
+        drawHero();
+        drawBoss();
+        drawEnemies();
+        drawCoins();
+        drawGoal();
+        drawLives();
+        drawCoinsCollected();
+
+        if (bossState === 'entering') {
+            boss.x -= 2;
+            if (boss.x <= targetX) {
+                bossState = 'standing';
+                setTimeout(() => {
+                    bossState = 'exiting';
+                }, 2000);
+            }
+        } else if (bossState === 'standing') {
+            drawSpeechBubble(ctx, boss.x - scrollOffset - 70, boss.y - 50, 100, 40, 10, "Hmm ...");
+        } else if (bossState === 'exiting') {
+            boss.x += 2;
+            if (boss.x > canvas.width) {
+                bossState = 'done';
+            }
+        } else if (bossState === 'done') {
+            currentLevel.boss = null;
+            gameLoop();
+            return;
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
 function update() {
     hero.x += hero.dx;
     hero.y += hero.dy;
@@ -299,10 +382,10 @@ function update() {
             boss.dy *= -1;
         }
 
-        if (hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset - 20 &&
-            hero.x < boss.x + boss.width - scrollOffset + 20 &&
-            hero.y + hero.height > boss.y - 20 &&
-            hero.y < boss.y + boss.height + 20) {
+        if (hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset - 50 &&
+            hero.x < boss.x + boss.width - scrollOffset + 50 &&
+            hero.y + hero.height > boss.y - 50 &&
+            hero.y < boss.y + boss.height + 50) {
             boss.health--;
             if (boss.health <= 0) {
                 currentLevel.bossDefeated = true;
@@ -333,7 +416,7 @@ function update() {
 
     if (hero.dx !== 0 && !hero.jumping && !hero.isAttacking) {
         hero.walkCounter++;
-        if (hero.walkCounter % 20 < 10) {  // Adjusted walk animation speed
+        if (hero.walkCounter % 30 < 15) {  // Adjusted walk animation speed
             hero.currentImage = heroImages.walk1;
         } else {
             hero.currentImage = heroImages.walk2;
