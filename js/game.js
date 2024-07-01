@@ -270,13 +270,13 @@ function animateBossIntro() {
         ctx.stroke();
         ctx.fillStyle = 'black';
         ctx.font = '16px Arial';
-        ctx.fillText(text, x + 10, y + 25);
+        ctx.fillText(text, x + 20, y + 25);
 
         // Draw the tail of the speech bubble
         ctx.beginPath();
-        ctx.moveTo(x + width / 2 - 10, y + height);
-        ctx.lineTo(x + width / 2 + 10, y + height);
-        ctx.lineTo(x + width / 2, y + height + 10);
+        ctx.moveTo(x + width / 2 - 1, y + height);
+        ctx.lineTo(x + width / 2 + 30, y + height);
+        ctx.lineTo(x + width / 1.2, y + height + 10);
         ctx.closePath();
         ctx.fill();
     }
@@ -302,7 +302,7 @@ function animateBossIntro() {
                 }, 2000);
             }
         } else if (bossState === 'standing') {
-            drawSpeechBubble(ctx, boss.x - scrollOffset - 70, boss.y - 50, 100, 40, 10, "Hmm ...");
+            drawSpeechBubble(ctx, boss.x - scrollOffset - 70, boss.y - 70, 100, 40, 10, "Hmm ...");
         } else if (bossState === 'exiting') {
             boss.x += 2;
             if (boss.x > canvas.width) {
