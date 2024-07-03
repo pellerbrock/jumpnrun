@@ -8,9 +8,10 @@ body {
 }
 
 canvas {
-    background-color: #87CEEB;
     display: block;
-    margin: 0 auto;
+    margin: 20px auto;
+    background-color: #87CEEB;
+    border: 2px solid #000;
 }
 
 .start-screen, .controls-screen, .character-selection, .level-selection {
@@ -20,28 +21,83 @@ canvas {
     justify-content: center;
     height: 100vh;
 }
-.character-selection img {
-    width: 100px; /* Setze die gewünschte Breite */
-    height: auto; /* Erhält das Seitenverhältnis */
-    margin: 10px; /* Fügt einen kleinen Abstand zwischen den Bildern hinzu */
-}
 
-
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-button {
-    font-family: 'Press Start 2P', cursive;
+.menu button, .controls-screen button, .level-selection button {
+    background-color: #FFD700;
+    border: 2px solid #000;
     padding: 10px 20px;
-    background-color: #000;
-    color: #fff;
-    border: 2px solid #fff;
+    margin: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.menu button:hover, .controls-screen button:hover, .level-selection button:hover,
+.menu button.focused, .controls-screen button.focused, .level-selection button.focused {
+    background-color: #FFA500;
+}
+
+.character-selection img {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #444;
+.character-selection img.focused {
+    border: 2px solid #FFD700;
 }
+
+
+
+canvas {
+    display: block;
+    margin: 0 auto;
+    background-color: #000;
+}
+
+.start-screen, .controls-screen, .character-selection, .level-selection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+}
+
+.start-screen h1, .controls-screen h2 {
+    font-size: 2em;
+    color: #ffd700;
+    margin-bottom: 20px;
+}
+
+.menu button, .character-selection img, .level-selection button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1em;
+    color: #000;
+    background-color: #ffd700;
+    border: 2px solid #ffd700;
+    margin: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.menu button:hover, .menu button.selected, .character-selection img:hover, .character-selection img.selected, .level-selection button:hover, .level-selection button.selected {
+    background-color: #000;
+    color: #ffd700;
+    border: 2px solid #ffd700;
+}
+
+.character-selection img, .level-selection button {
+    height: 80px;
+}
+
+#backButton {
+    margin-top: 20px;
+}
+
+/* Highlight the selected menu item */
+.selected {
+    background-color: #000 !important;
+    color: #ffd700 !important;
+    border: 2px sol
