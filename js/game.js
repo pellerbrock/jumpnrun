@@ -51,10 +51,10 @@ let scrollOffset = 0;
 const levels = [
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 1800, height: 20, visible: true, image: platformImage },
-            { x: 700, y: canvas.height - 230, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 900, y: canvas.height - 210, width: 60, height: 10, visible: true, image: platformImage },
-            { x: 1100, y: canvas.height - 190, width: 60, height: 10, visible: true, image: platformImage }
+            { x: 0, y: canvas.height - 115, width: 1800, height: 10, visible: false },
+            { x: 700, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 210, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 1100, y: canvas.height - 190, width: 60, height: 30, visible: true, image: platformImage }
         ],
         enemies: [
             { x: 1000, y: canvas.height - 220, width: 50, height: 50, originalY: canvas.height - 220, dy: 0.5 }
@@ -80,15 +80,15 @@ const levels = [
     },
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: true, image: platformImage },
-            { x: 150, y: canvas.height - 230, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 350, y: canvas.height - 190, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 350, y: canvas.height - 390, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 500, y: canvas.height - 270, width: 60, height: 10, visible: true, image: platformImage },
-            { x: 580, y: canvas.height - 470, width: 90, height: 10, visible: true, image: platformImage },
-            { x: 700, y: canvas.height - 340, width: 60, height: 10, visible: true, image: platformImage },
-            { x: 850, y: canvas.height - 320, width: 60, height: 10, visible: true, image: platformImage },
-            { x: 730, y: canvas.height - 470, width: 180, height: 10, visible: true, image: platformImage }
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 150, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 190, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 390, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 270, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 580, y: canvas.height - 470, width: 90, height: 30, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 340, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 850, y: canvas.height - 320, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 730, y: canvas.height - 470, width: 180, height: 30, visible: true, image: platformImage }
         ],
         enemies: [
             { x: 270, y: canvas.height - 230, width: 50, height: 50, originalY: canvas.height - 230, dy: 0.5 },
@@ -107,11 +107,11 @@ const levels = [
     // Weitere Level hinzufügen
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: true, image: platformImage },
-            { x: 290, y: canvas.height - 220, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 490, y: canvas.height - 250, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 690, y: canvas.height - 300, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 890, y: canvas.height - 370, width: 100, height: 10, visible: true, image: platformImage },
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 290, y: canvas.height - 220, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 490, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 690, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 890, y: canvas.height - 370, width: 100, height: 30, visible: true, image: platformImage },
         ],
         enemies: [
             { x: 400, y: canvas.height - 270, width: 50, height: 50, originalY: canvas.height - 270, dy: 0.4 },
@@ -129,12 +129,12 @@ const levels = [
     },
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: true, image: platformImage },
-            { x: 200, y: canvas.height - 200, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 400, y: canvas.height - 250, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 600, y: canvas.height - 300, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 800, y: canvas.height - 350, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 1000, y: canvas.height - 400, width: 100, height: 10, visible: true, image: platformImage },
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 200, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 400, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 600, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 800, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 1000, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
         ],
         enemies: [
             { x: 500, y: canvas.height - 270, width: 50, height: 50, originalY: canvas.height - 270, dy: 0.4 },
@@ -152,12 +152,12 @@ const levels = [
     },
     {
         platforms: [
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: true, image: platformImage },
-            { x: 100, y: canvas.height - 200, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 300, y: canvas.height - 250, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 500, y: canvas.height - 300, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 700, y: canvas.height - 350, width: 100, height: 10, visible: true, image: platformImage },
-            { x: 900, y: canvas.height - 400, width: 100, height: 10, visible: true, image: platformImage },
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 100, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 300, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
         ],
         enemies: [
             { x: 600, y: canvas.height - 270, width: 50, height: 50, originalY: canvas.height - 270, dy: 0.4 },
@@ -281,7 +281,7 @@ function drawPlatforms() {
         if (platform.image) {
             ctx.drawImage(platform.image, platform.x - scrollOffset, platform.y, platform.width, platform.height);
         } else {
-            ctx.fillStyle = '#070439';
+            ctx.fillStyle = platform.visible ? '#070439' : 'rgba(0, 0, 0, 0)';
             ctx.fillRect(platform.x - scrollOffset, platform.y, platform.width, platform.height);
         }
     });
