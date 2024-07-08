@@ -29,10 +29,25 @@ coinImage.src = 'assets/coin.png';
 platformImage.src = 'assets/platform.png';
 speedBoostImage.src = 'assets/speedboost.png';
 
+// Portal Animation Setup
+const portalFrames = [];
+const portalFrameCount = 4; // Anzahl der Frames in der Animation
+let currentPortalFrame = 0;
+
+// Portalbilder laden
+for (let i = 1; i <= portalFrameCount; i++) {
+    let img = new Image();
+    img.src = `assets/portal${i}.png`;
+    portalFrames.push(img);
+}
+
+let portalAnimationInterval = 200; // Zeit in Millisekunden zwischen den Frames
+let lastPortalFrameChange = 0;
+
 let hero = {
     x: 50,
     y: canvas.height - 170,
-    width: 50,
+    width: 31.25,
     height: 50,
     speed: 5,
     dx: 0,
@@ -50,14 +65,14 @@ let scrollOffset = 0;
 
 const levels = [
     {
-        platforms: [
+        platforms: [ // Level 1
             { x: 0, y: canvas.height - 115, width: 1800, height: 10, visible: false },
             { x: 700, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
             { x: 900, y: canvas.height - 210, width: 60, height: 30, visible: true, image: platformImage },
             { x: 1100, y: canvas.height - 190, width: 60, height: 30, visible: true, image: platformImage }
         ],
         enemies: [
-            { x: 1000, y: canvas.height - 220, width: 50, height: 50, originalY: canvas.height - 220, dy: 0.5 }
+            { x: 1000, y: canvas.height - 220, width: 25, height: 25, originalY: canvas.height - 220, dy: 0.5 }
         ],
         goal: { x: 1250, y: canvas.height - 360, width: 50, height: 50 },
         coins: [
@@ -79,7 +94,7 @@ const levels = [
         ]
     },
     {
-        platforms: [
+        platforms: [ // Level 2
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 150, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
             { x: 350, y: canvas.height - 190, width: 100, height: 30, visible: true, image: platformImage },
@@ -91,7 +106,7 @@ const levels = [
             { x: 730, y: canvas.height - 470, width: 180, height: 30, visible: true, image: platformImage }
         ],
         enemies: [
-            { x: 270, y: canvas.height - 230, width: 50, height: 50, originalY: canvas.height - 230, dy: 0.5 },
+            { x: 270, y: canvas.height - 230, width: 25, height: 25, originalY: canvas.height - 230, dy: 0.5 },
             { x: 780, y: canvas.height - 420, width: 50, height: 50, originalY: canvas.height - 420, dy: 0.3 }
         ],
         goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 },
@@ -106,7 +121,7 @@ const levels = [
     },
     // Weitere Level hinzufügen
     {
-        platforms: [
+        platforms: [ // Level 3
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 290, y: canvas.height - 220, width: 100, height: 30, visible: true, image: platformImage },
             { x: 490, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
@@ -114,7 +129,7 @@ const levels = [
             { x: 890, y: canvas.height - 370, width: 100, height: 30, visible: true, image: platformImage },
         ],
         enemies: [
-            { x: 400, y: canvas.height - 270, width: 50, height: 50, originalY: canvas.height - 270, dy: 0.4 },
+            { x: 400, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
             { x: 800, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
         ],
         goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
@@ -128,7 +143,7 @@ const levels = [
         ]
     },
     {
-        platforms: [
+        platforms: [ // Level 4
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 200, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
             { x: 400, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
@@ -137,8 +152,8 @@ const levels = [
             { x: 1000, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
         ],
         enemies: [
-            { x: 500, y: canvas.height - 270, width: 50, height: 50, originalY: canvas.height - 270, dy: 0.4 },
-            { x: 900, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+            { x: 530, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
+            { x: 930, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
         ],
         goal: { x: 1200, y: canvas.height - 450, width: 50, height: 50 },
         coins: [
@@ -151,7 +166,7 @@ const levels = [
         ]
     },
     {
-        platforms: [
+        platforms: [ // Level 5 
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 100, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
             { x: 300, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
@@ -160,13 +175,135 @@ const levels = [
             { x: 900, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
         ],
         enemies: [
-            { x: 600, y: canvas.height - 270, width: 50, height: 50, originalY: canvas.height - 270, dy: 0.4 },
-            { x: 1000, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+            { x: 630, y: canvas.height - 320, width: 25, height: 25, originalY: canvas.height - 320, dy: 0.4 },
+            { x: 1030, y: canvas.height - 370, width: 25, height: 25, originalY: canvas.height - 370, dy: 0.3 }
         ],
         goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
         coins: [
-            { x: 250, y: canvas.height - 220, width: 20, height: 20, collected: false },
-            { x: 650, y: canvas.height - 320, width: 20, height: 20, collected: false }
+            { x: 250, y: canvas.height - 290, width: 20, height: 20, collected: false },
+            { x: 650, y: canvas.height - 390, width: 20, height: 20, collected: false }
+        ],
+        boss: {
+            x: 915,
+            y: canvas.height - 450,
+            width: 50,
+            height: 50,
+            originalY: canvas.height - 450,
+            dy: 0,
+            health: 5
+        },
+        speedBoosts: [
+            { x: 450, y: canvas.height - 240, width: 30, height: 30, collected: false }
+        ]
+    },
+    {
+        platforms: [ // Level 6
+            { x: 0, y: canvas.height - 215, width: 1800, height: 10, visible: false },
+            { x: 500, y: canvas.height - 320, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 650, y: canvas.height - 390, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 410, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 1100, y: canvas.height - 290, width: 60, height: 30, visible: true, image: platformImage }
+        ],
+        enemies: [
+            { x: 1000, y: canvas.height - 320, width: 25, height: 25, originalY: canvas.height - 320, dy: 0.5 }
+        ],
+        goal: { x: 1250, y: canvas.height - 360, width: 50, height: 50 },
+        coins: [
+            { x: 825, y: canvas.height - 520, width: 20, height: 20, collected: false },
+            { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
+        ],
+        speedBoosts: [
+        ]
+    },
+    {
+        platforms: [ // Level 7
+            { x: 0, y: canvas.height - 265, width: 2000, height: 20, visible: false },
+            { x: 150, y: canvas.height - 280, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 240, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 440, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 320, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 580, y: canvas.height - 520, width: 90, height: 30, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 390, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 850, y: canvas.height - 370, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 730, y: canvas.height - 520, width: 180, height: 30, visible: true, image: platformImage }
+        ],
+        enemies: [
+            { x: 290, y: canvas.height - 280, width: 25, height: 25, originalY: canvas.height - 280, dy: 0.5 },
+            { x: 780, y: canvas.height - 470, width: 50, height: 50, originalY: canvas.height - 470, dy: 0.3 }
+        ],
+        goal: { x: 950, y: canvas.height - 460, width: 50, height: 50 },
+        coins: [
+            { x: 395, y: canvas.height - 300, width: 20, height: 20, collected: false },
+            { x: 620, y: canvas.height - 570, width: 20, height: 20, collected: false }
+        ],
+        boss: null,
+        speedBoosts: [
+            { x: 600, y: canvas.height - 400, width: 30, height: 30, collected: false }
+        ]
+    },
+    // Weitere Level hinzufügen
+    {
+        platforms: [ // Level 8
+            { x: 0, y: canvas.height - 215, width: 2000, height: 20, visible: false },
+            { x: 290, y: canvas.height - 220, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 490, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 690, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 890, y: canvas.height - 370, width: 100, height: 30, visible: true, image: platformImage },
+        ],
+        enemies: [
+            { x: 400, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
+            { x: 800, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+        ],
+        goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
+        coins: [
+            { x: 350, y: canvas.height - 300, width: 20, height: 20, collected: false },
+            { x: 750, y: canvas.height - 350, width: 20, height: 20, collected: false }
+        ],
+        boss: null,
+        speedBoosts: [
+            { x: 450, y: canvas.height - 290, width: 30, height: 30, collected: false }
+        ]
+    },
+    {
+        platforms: [ // Level 9
+            { x: 0, y: canvas.height - 215, width: 2000, height: 20, visible: false },
+            { x: 200, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 400, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 600, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 800, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 1000, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
+        ],
+        enemies: [
+            { x: 530, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
+            { x: 930, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+        ],
+        goal: { x: 1200, y: canvas.height - 450, width: 50, height: 50 },
+        coins: [
+            { x: 300, y: canvas.height - 220, width: 20, height: 20, collected: false },
+            { x: 700, y: canvas.height - 320, width: 20, height: 20, collected: false }
+        ],
+        boss: null,
+        speedBoosts: [
+            { x: 350, y: canvas.height - 240, width: 30, height: 30, collected: false }
+        ]
+    },
+    {
+        platforms: [ // Level 10
+            { x: 0, y: canvas.height - 215, width: 2000, height: 20, visible: false },
+            { x: 100, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 300, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
+        ],
+        enemies: [
+            { x: 630, y: canvas.height - 320, width: 25, height: 25, originalY: canvas.height - 320, dy: 0.4 },
+            { x: 1030, y: canvas.height - 370, width: 25, height: 25, originalY: canvas.height - 370, dy: 0.3 }
+        ],
+        goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
+        coins: [
+            { x: 250, y: canvas.height - 290, width: 20, height: 20, collected: false },
+            { x: 650, y: canvas.height - 390, width: 20, height: 20, collected: false }
         ],
         boss: {
             x: 915,
@@ -314,25 +451,30 @@ function drawBoss() {
     }
 }
 
+// Funktion zum Zeichnen des animierten Portals
+function drawPortal() {
+    if (Date.now() - lastPortalFrameChange > portalAnimationInterval) {
+        currentPortalFrame = (currentPortalFrame + 1) % portalFrameCount;
+        lastPortalFrameChange = Date.now();
+    }
+    let portal = portalFrames[currentPortalFrame];
+    ctx.drawImage(portal, currentLevel.goal.x - scrollOffset, currentLevel.goal.y, currentLevel.goal.width, currentLevel.goal.height);
+}
+
 function drawGoal() {
-    let goal = currentLevel.goal;
-    ctx.fillStyle = '#FFD700';
-    ctx.fillRect(goal.x - scrollOffset, goal.y, goal.width, goal.height);
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.fillText('Goal!', goal.x - scrollOffset + 5, goal.y + 30);
+    drawPortal();
 }
 
 function drawLives() {
     ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
+    ctx.font = '15px "Press Start 2P", cursive';
     ctx.fillText('Lives: ' + hero.lives, 10, 30);
 }
 
 function drawCoinsCollected() {
     ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.fillText('Coins: ' + hero.coinsCollected, 10, 60);
+    ctx.font = '15px "Press Start 2P", cursive';;
+    ctx.fillText('Confidence: ' + hero.coinsCollected, 10, 60);
     ctx.fillText('Level: ' + (currentLevelIndex + 1), 10, 90);
 }
 
@@ -454,11 +596,13 @@ function update() {
             hero.y + hero.height > enemy.y &&
             hero.y < enemy.y + enemy.height) {
             hero.lives--;
-            displayMessage("Du bist gestorben!");
             if (hero.lives <= 0) {
-                resetToCharacterSelection();
+
+                setTimeout(resetToCharacterSelection);
+                displayMessage("You Died!");
             } else {
-                resetHeroPosition();
+                displayMessage("You Died!");
+                setTimeout(resetHeroPosition);
             }
         }
     });
@@ -512,11 +656,12 @@ function update() {
             hero.y + hero.height > boss.y &&
             hero.y < boss.y + boss.height) {
             hero.lives--;
-            displayMessage("Du bist gestorben!");
             if (hero.lives <= 0) {
-                resetToCharacterSelection();
+                displayMessage("Du bist gestorben!");
+                setTimeout(resetToCharacterSelection);
             } else {
-                resetHeroPosition();
+                displayMessage("Du bist gestorben!");
+                setTimeout(resetHeroPosition);
             }
         }
     }
@@ -556,7 +701,7 @@ function update() {
 
 function resetHeroPosition() {
     hero.x = 50;
-    hero.y = canvas.height - 200;
+    hero.y = canvas.height - 400;
     hero.dx = 0;
     hero.dy = 0;
     hero.isAttacking = false;
@@ -571,6 +716,10 @@ function resetToCharacterSelection() {
     currentLevel = levels[currentLevelIndex];
     resetHeroPosition();
     document.getElementById('characterSelection').style.display = 'flex';
+    canvas.style.display = 'none';
+    backToMenuButton.style.display = 'none';
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
 }
 
 function moveHero(e) {
