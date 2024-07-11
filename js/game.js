@@ -46,7 +46,7 @@ let lastPortalFrameChange = 0;
 
 let hero = {
     x: 50,
-    y: canvas.height - 170,
+    y: canvas.height - 165,
     width: 31.25,
     height: 50,
     speed: 5,
@@ -361,7 +361,9 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
             gameStarted = true;
             backgroundMusic.play();
             if (currentLevelIndex === 0 && currentLevel.boss && currentLevel.boss.intro) {
-                animateBossIntro();
+                animateBossIntro(() => {
+                    displayHeroSpeechBubble("Swallow your problems\nand comfort him...", 2000, gameLoop);
+                });
             } else {
                 gameLoop();
             }
@@ -490,7 +492,7 @@ function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function animateBossIntro() {
+function animateBossIntro(callback) {
     const boss = currentLevel.boss;
     boss.x = canvas.width;
     const targetX = canvas.width - 200;
@@ -510,12 +512,17 @@ function animateBossIntro() {
         ctx.stroke();
         ctx.fillStyle = 'black';
         ctx.font = '16px Arial';
-        ctx.fillText(text, x + 20, y + 25);
+
+        const lines = text.split('\n');
+        const lineHeight = 20;
+        lines.forEach((line, index) => {
+            ctx.fillText(line, x + 10, y + 22.5 + (index * lineHeight));
+        });
 
         // Draw the tail of the speech bubble
         ctx.beginPath();
         ctx.moveTo(x + width / 2 - 1, y + height);
-        ctx.lineTo(x + width / 2 + 30, y + height);
+        ctx.lineTo(x + width / 2 + 35, y + height);
         ctx.lineTo(x + width / 1.2, y + height + 10);
         ctx.closePath();
         ctx.fill();
@@ -543,7 +550,7 @@ function animateBossIntro() {
                 }, 2000);
             }
         } else if (bossState === 'standing') {
-            drawSpeechBubble(ctx, boss.x - scrollOffset - 70, boss.y - 70, 100, 40, 10, "Hmm ...");
+            drawSpeechBubble(ctx, boss.x - scrollOffset - 75, boss.y - 80, 125, 55, 10, "I am so sad\nand stressed…");
         } else if (bossState === 'exiting') {
             boss.x += 2;
             if (boss.x > canvas.width) {
@@ -551,7 +558,7 @@ function animateBossIntro() {
             }
         } else if (bossState === 'done') {
             currentLevel.boss = null;
-            gameLoop();
+            callback();
             return;
         }
 
@@ -559,6 +566,63 @@ function animateBossIntro() {
     }
 
     animate();
+}
+
+function displayHeroSpeechBubble(text, duration, callback) {
+    function drawSpeechBubble(ctx, x, y, width, height, radius, text) {
+        let r = radius;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + width, y, x + width, y + height, r);
+        ctx.arcTo(x + width, y + height, x, y + height, r);
+        ctx.arcTo(x, y + height, x, y, r);
+        ctx.arcTo(x, y, x + width, y, r);
+        ctx.closePath();
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = 'black';
+        ctx.font = '16px Arial';
+
+        const lines = text.split('\n');
+        const lineHeight = 20;
+        lines.forEach((line, index) => {
+            ctx.fillText(line, x + 10, y + 20 + (index * lineHeight));
+        });
+
+        
+
+// Draw the tail of the speech bubble
+ctx.beginPath();
+ctx.ellipse(x + width / 2 - 65, y + height + 30, 5, 2.5, 0, 0, Math.PI * 2);
+ctx.fill();
+ctx.beginPath();
+ctx.ellipse(x + width / 2 - 50, y + height + 20, 10, 5, 0, 0, Math.PI * 2);
+ctx.fill();
+ctx.beginPath();
+ctx.ellipse(x + width / 2 - 25, y + height + 10, 15, 7, 0, 0, Math.PI * 2);
+ctx.fill();
+    }
+
+    function animate() {
+        clear();
+        drawBackground();
+        drawPlatforms();
+        drawHero();
+        drawEnemies();
+        drawCoins();
+        drawGoal();
+        drawLives();
+        drawCoinsCollected();
+        drawSpeedBoosts();
+        drawSpeechBubble(ctx, hero.x + 10, hero.y - 80, 185, 50, 10, text);
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+    setTimeout(() => {
+        callback();
+    }, duration);
 }
 
 function update() {
@@ -764,13 +828,76 @@ function displayMessage(message) {
 function nextLevel() {
     currentLevelIndex++;
     if (currentLevelIndex >= levels.length) {
-        alert('You completed all levels!');
-        currentLevelIndex = 0;
+        heroStampAnimation(() => {
+            alert('You completed all levels!');
+            currentLevelIndex = 0;
+            currentLevel = levels[currentLevelIndex];
+            resetHeroPosition();
+            goalReached = false;
+            gameLoop();
+        });
+    } else {
+        currentLevel = levels[currentLevelIndex];
+        resetHeroPosition();
+        goalReached = false;
+        gameLoop();
     }
-    currentLevel = levels[currentLevelIndex];
-    resetHeroPosition();
-    goalReached = false;
-    gameLoop();
+}
+
+function heroStampAnimation(callback) {
+    const heroImages = [new Image(), new Image(), new Image(), new Image(), new Image()];
+    const jumpHeight = 100;
+    let currentHeroIndex = 0;
+    let jumping = true;
+    let imagesLoaded = 0;
+
+    heroImages.forEach((img, index) => {
+        img.src = `assets/hero${index + 1}_jump.png`;
+        img.onload = () => {
+            imagesLoaded++;
+            if (imagesLoaded === heroImages.length) {
+                startAnimation();
+            }
+        };
+    });
+
+    function drawHeroStamp() {
+        clear();
+        drawBackground();
+        drawPlatforms();
+        drawEnemies();
+        drawCoins();
+        drawGoal();
+        drawLives();
+        drawCoinsCollected();
+        drawSpeedBoosts();
+
+        for (let i = 0; i <= currentHeroIndex; i++) {
+            const y = jumping ? canvas.height - 180 - jumpHeight : canvas.height - 180;
+            ctx.drawImage(heroImages[i], canvas.width / 2, y, 50, 50);
+        }
+    }
+
+    function animate() {
+        if (jumping) {
+            currentHeroIndex++;
+            if (currentHeroIndex >= heroImages.length) {
+                jumping = false;
+            }
+        } else {
+            currentHeroIndex--;
+            if (currentHeroIndex < 0) {
+                callback();
+                return;
+            }
+        }
+        drawHeroStamp();
+        setTimeout(animate, 500);
+    }
+
+    function startAnimation() {
+        animate();
+    }
 }
 
 function gameLoop() {
@@ -859,3 +986,4 @@ document.addEventListener('keydown', (e) => {
 });
 
 updateFocusedButton(menus.startScreen);
+
