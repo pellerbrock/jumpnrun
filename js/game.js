@@ -22,11 +22,11 @@ let coinImage = new Image();
 let platformImage = new Image();
 let speedBoostImage = new Image();
 
-backgroundImage.src = 'assets/background.png';
+backgroundImage.src = 'assets/background2.png';
 enemyImage.src = 'assets/enemy_character.png';
 bossImage.src = 'assets/boss_character.png';
 coinImage.src = 'assets/coin.png';
-platformImage.src = 'assets/platform.png';
+platformImage.src = 'assets/platform2.png';
 speedBoostImage.src = 'assets/speedboost.png';
 
 // Portal Animation Setup
@@ -46,7 +46,7 @@ let lastPortalFrameChange = 0;
 
 let hero = {
     x: 50,
-    y: canvas.height - 165,
+    y: canvas.height - 365,
     width: 31.25,
     height: 50,
     speed: 5,
