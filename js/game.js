@@ -386,9 +386,12 @@ function drawHero() {
 function drawBackground() {
     const backgroundWidth = 800;
     const backgroundHeight = 800;
+    const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
     const startY = canvas.height - backgroundHeight;
 
-    ctx.drawImage(backgroundImage, 0, startY, backgroundWidth, backgroundHeight);
+    for (let i = 0; i <= repeatCount; i++) {
+        ctx.drawImage(backgroundImage, i * backgroundWidth - scrollOffset % backgroundWidth, startY, backgroundWidth, backgroundHeight);
+    }
 }
 
 function drawPlatforms() {
