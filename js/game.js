@@ -1,37 +1,41 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const backgroundMusic = document.getElementById('backgroundMusic');
-const backToMenuButton = document.createElement('button');
-backToMenuButton.innerText = "Zurück zum Menü";
-backToMenuButton.id = "backToMenuButton";
-backToMenuButton.style.display = 'none';
-document.body.appendChild(backToMenuButton);
-
-const mobileStartButton = document.createElement('button');
-mobileStartButton.innerText = "Start";
-mobileStartButton.id = "mobileStartButton";
-mobileStartButton.style.display = 'none';
-document.body.appendChild(mobileStartButton);
+const mobileStartButton = document.getElementById('mobileStartButton');
 
 let isMobile = false;
 let autoRun = false;
 
-// Function to check if the device is mobile based on screen size
-function checkMobile() {
-    if (window.innerWidth < 768) {
+function resizeCanvas() {
+    if (window.innerWidth < window.innerHeight) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         isMobile = true;
-        mobileStartButton.style.display = 'block';
-        document.body.style.height = '100vh';
-        canvas.style.width = '100vw';
-        canvas.style.height = '100vh';
     } else {
+        canvas.width = 800;
+        canvas.height = 800;
         isMobile = false;
-        mobileStartButton.style.display = 'none';
     }
+    adjustGameElements();
 }
 
-window.addEventListener('resize', checkMobile);
-checkMobile();
+function adjustGameElements() {
+    hero.y = canvas.height - hero.height - 50;
+    currentLevel.platforms.forEach(platform => {
+        platform.y = canvas.height - 115;
+    });
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+mobileStartButton.addEventListener('click', () => {
+    autoRun = true;
+    mobileStartButton.style.display = 'none';
+    gameStarted = true;
+    backgroundMusic.play();
+    gameLoop();
+});
 
 let heroImages = {
     idle: new Image(),
@@ -70,12 +74,14 @@ let enemyImage = new Image();
 let bossImage = new Image();
 let coinImage = new Image();
 let platformImage = new Image();
+let speedBoostImage = new Image();
 
-backgroundImage.src = 'assets/background.png';
+backgroundImage.src = 'assets/background2.png';
 enemyImage.src = 'assets/enemy_character.png';
 bossImage.src = 'assets/boss_character.png';
 coinImage.src = 'assets/coin.png';
-platformImage.src = 'assets/platform.png';
+platformImage.src = 'assets/platform2.png';
+speedBoostImage.src = 'assets/speedboost.png';
 
 hero2Images.idle.src = 'assets/hero2_idle.png';
 hero2Images.walk1.src = 'assets/hero2_walk1.png';
@@ -92,17 +98,17 @@ hero5Images.walk2.src = 'assets/hero5_walk2.png';
 
 // Portal Animation Setup
 const portalFrames = [];
-const portalFrameCount = 4; // Anzahl der Frames in der Animation
+const portalFrameCount = 4;
 let currentPortalFrame = 0;
 
-// Portalbilder laden
+// Load portal images
 for (let i = 1; i <= portalFrameCount; i++) {
     let img = new Image();
     img.src = `assets/portal${i}.png`;
     portalFrames.push(img);
 }
 
-let portalAnimationInterval = 200; // Zeit in Millisekunden zwischen den Frames
+let portalAnimationInterval = 200;
 let lastPortalFrameChange = 0;
 
 let hero = {
@@ -114,18 +120,19 @@ let hero = {
     dx: 0,
     dy: 0,
     jumping: false,
-    lives: 3, // Anzahl der Leben
+    lives: 3,
     coinsCollected: 0,
     currentImage: heroImages.idle,
     walkCounter: 0,
-    isAttacking: false
+    isAttacking: false,
+    speedBoosted: false
 };
 
 let scrollOffset = 0;
 
 const levels = [
     {
-        platforms: [ // Level 1
+        platforms: [
             { x: 0, y: canvas.height - 115, width: 1800, height: 10, visible: false },
             { x: 700, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
             { x: 900, y: canvas.height - 210, width: 60, height: 30, visible: true, image: platformImage },
@@ -148,9 +155,113 @@ const levels = [
             dy: 0,
             health: 5,
             intro: true
-        }
+        },
+        speedBoosts: [
+            { x: 500, y: canvas.height - 150, width: 30, height: 30, collected: false }
+        ]
     },
-    // Additional levels...
+    {
+        platforms: [
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 150, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 190, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 390, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 270, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 580, y: canvas.height - 470, width: 90, height: 30, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 340, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 850, y: canvas.height - 320, width: 60, height: 30, visible: true, image: platformImage },
+            { x: 730, y: canvas.height - 470, width: 180, height: 30, visible: true, image: platformImage }
+        ],
+        enemies: [
+            { x: 270, y: canvas.height - 230, width: 25, height: 25, originalY: canvas.height - 230, dy: 0.5 },
+            { x: 780, y: canvas.height - 420, width: 50, height: 50, originalY: canvas.height - 420, dy: 0.3 }
+        ],
+        goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 },
+        coins: [
+            { x: 400, y: canvas.height - 250, width: 20, height: 20, collected: false },
+            { x: 620, y: canvas.height - 330, width: 20, height: 20, collected: false }
+        ],
+        boss: null,
+        speedBoosts: [
+            { x: 600, y: canvas.height - 350, width: 30, height: 30, collected: false }
+        ]
+    },
+    {
+        platforms: [
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 290, y: canvas.height - 220, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 490, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 690, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 890, y: canvas.height - 370, width: 100, height: 30, visible: true, image: platformImage },
+        ],
+        enemies: [
+            { x: 400, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
+            { x: 800, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+        ],
+        goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
+        coins: [
+            { x: 350, y: canvas.height - 300, width: 20, height: 20, collected: false },
+            { x: 750, y: canvas.height - 350, width: 20, height: 20, collected: false }
+        ],
+        boss: null,
+        speedBoosts: [
+            { x: 450, y: canvas.height - 290, width: 30, height: 30, collected: false }
+        ]
+    },
+    {
+        platforms: [
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 200, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 400, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 600, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 800, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 1000, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
+        ],
+        enemies: [
+            { x: 530, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
+            { x: 930, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+        ],
+        goal: { x: 1200, y: canvas.height - 450, width: 50, height: 50 },
+        coins: [
+            { x: 300, y: canvas.height - 220, width: 20, height: 20, collected: false },
+            { x: 700, y: canvas.height - 320, width: 20, height: 20, collected: false }
+        ],
+        boss: null,
+        speedBoosts: [
+            { x: 350, y: canvas.height - 240, width: 30, height: 30, collected: false }
+        ]
+    },
+    {
+        platforms: [
+            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
+            { x: 100, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 300, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
+        ],
+        enemies: [
+            { x: 630, y: canvas.height - 320, width: 25, height: 25, originalY: canvas.height - 320, dy: 0.4 },
+            { x: 1030, y: canvas.height - 370, width: 25, height: 25, originalY: canvas.height - 370, dy: 0.3 }
+        ],
+        goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
+        coins: [
+            { x: 250, y: canvas.height - 290, width: 20, height: 20, collected: false },
+            { x: 650, y: canvas.height - 390, width: 20, height: 20, collected: false }
+        ],
+        boss: {
+            x: 915,
+            y: canvas.height - 450,
+            width: 50,
+            height: 50,
+            originalY: canvas.height - 450,
+            dy: 0,
+            health: 5
+        },
+        speedBoosts: [
+            { x: 450, y: canvas.height - 240, width: 30, height: 30, collected: false }
+        ]
+    },
 ];
 
 let currentLevelIndex = 0;
@@ -194,8 +305,17 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
             console.log("Hero images loaded successfully.");
             document.getElementById('characterSelection').style.display = 'none';
             canvas.style.display = 'block';
-            backToMenuButton.style.display = 'block';
-            mobileStartButton.style.display = 'block';
+            if (!isMobile) {
+                gameStarted = true;
+                backgroundMusic.play();
+                if (currentLevelIndex === 0 && currentLevel.boss && currentLevel.boss.intro) {
+                    animateBossIntro(() => {
+                        displayHeroSpeechBubble("Swallow your problems\nand comfort him...", 2000, gameLoop);
+                    });
+                } else {
+                    gameLoop();
+                }
+            }
         };
         heroImages.idle.onerror = () => {
             console.error("Error loading hero images.");
@@ -212,48 +332,12 @@ document.getElementById('levelSelection').addEventListener('click', (e) => {
     }
 });
 
-backToMenuButton.addEventListener('click', () => {
-    resetToMainMenu();
-});
-
-mobileStartButton.addEventListener('click', () => {
-    mobileStartButton.style.display = 'none';
-    gameStarted = true;
-    backgroundMusic.play();
-    animateBossIntro(() => {
-        displayCountdown(() => {
-            autoRun = true;
-            gameLoop();
-        });
-    });
-});
-
-function resetToMainMenu() {
-    gameStarted = false;
-    hero.lives = 3;
-    hero.coinsCollected = 0;
-    currentLevelIndex = 0;
-    currentLevel = levels[currentLevelIndex];
-    resetHeroPosition();
-    canvas.style.display = 'none';
-    backToMenuButton.style.display = 'none';
-    document.getElementById('startScreen').style.display = 'flex';
-    backgroundMusic.pause();
-    backgroundMusic.currentTime = 0;
-}
-
 function drawHero() {
     ctx.drawImage(hero.currentImage, hero.x, hero.y, hero.width, hero.height);
 }
 
 function drawBackground() {
-    const backgroundWidth = backgroundImage.width;
-    const backgroundHeight = backgroundImage.height;
-    const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
-
-    for (let i = 0; i <= repeatCount; i++) {
-        ctx.drawImage(backgroundImage, i * backgroundWidth - scrollOffset % backgroundWidth, 0, backgroundWidth, backgroundHeight);
-    }
+    ctx.drawImage(backgroundImage, -scrollOffset, 0, canvas.width + scrollOffset, canvas.height);
 }
 
 function drawPlatforms() {
@@ -382,7 +466,6 @@ function drawGoal() {
     drawPortal();
 }
 
-// Funktion zum Zeichnen des animierten Portals
 function drawPortal() {
     if (Date.now() - lastPortalFrameChange > portalAnimationInterval) {
         currentPortalFrame = (currentPortalFrame + 1) % portalFrameCount;
@@ -405,14 +488,22 @@ function drawCoinsCollected() {
     ctx.fillText('Level: ' + (currentLevelIndex + 1), 10, 90);
 }
 
+function drawSpeedBoosts() {
+    currentLevel.speedBoosts.forEach(boost => {
+        if (!boost.collected) {
+            ctx.drawImage(speedBoostImage, boost.x - scrollOffset, boost.y, boost.width, boost.height);
+        }
+    });
+}
+
 function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-let animationActive = true; // Globale Variable, um den Animationsstatus zu verfolgen
+let animationActive = true;
 
 function startEndAnimation() {
-    if (!animationActive) return; // Animation überspringen, wenn sie deaktiviert ist
+    if (!animationActive) return;
 
     let hero2 = { x: -50, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero2Images, currentImage: hero2Images.walk1, reachedPosition: false };
     let hero3 = { x: -100, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero3Images, currentImage: hero3Images.walk1, reachedPosition: false };
@@ -438,7 +529,7 @@ function startEndAnimation() {
     }
 
     function animateHeroes() {
-        if (!animationActive) return; // Animation überspringen, wenn sie deaktiviert ist
+        if (!animationActive) return;
 
         clear();
         drawBackground();
@@ -450,6 +541,7 @@ function startEndAnimation() {
         drawGoal();
         drawLives();
         drawCoinsCollected();
+        drawSpeedBoosts();
 
         if (endAnimationStarted) {
             heroes.forEach((hero, index) => {
@@ -480,7 +572,6 @@ function startEndAnimation() {
     animateHeroes();
 }
 
-// Funktion zum Aktivieren/Deaktivieren der Animation
 function toggleAnimation() {
     animationActive = !animationActive;
     if (animationActive) {
@@ -488,9 +579,8 @@ function toggleAnimation() {
     }
 }
 
-// Beispiel: Animation durch Tastendruck ein-/ausschalten
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'a') { // 'a' Taste zum Ein-/Ausschalten der Animation
+    if (e.key === 'a') {
         toggleAnimation();
     }
 });
@@ -555,6 +645,22 @@ function update() {
         }
     });
 
+    currentLevel.speedBoosts.forEach(boost => {
+        if (!boost.collected &&
+            hero.x + hero.width > boost.x - scrollOffset &&
+            hero.x < boost.x + boost.width - scrollOffset &&
+            hero.y + hero.height > boost.y &&
+            hero.y < boost.y + boost.height) {
+            boost.collected = true;
+            hero.speedBoosted = true;
+            hero.speed *= 2;
+            setTimeout(() => {
+                hero.speed /= 2;
+                hero.speedBoosted = false;
+            }, 5000);
+        }
+    });
+
     if (currentLevel.boss && !currentLevel.bossDefeated) {
         let boss = currentLevel.boss;
         boss.y += boss.dy;
@@ -597,7 +703,7 @@ function update() {
 
     if (hero.dx !== 0 && !hero.jumping && !hero.isAttacking) {
         hero.walkCounter++;
-        if (hero.walkCounter % 30 < 15) {  // Adjusted walk animation speed
+        if (hero.walkCounter % 30 < 15) {
             hero.currentImage = heroImages.walk1;
         } else {
             hero.currentImage = heroImages.walk2;
@@ -638,22 +744,25 @@ function resetToCharacterSelection() {
     resetHeroPosition();
     document.getElementById('characterSelection').style.display = 'flex';
     canvas.style.display = 'none';
-    backToMenuButton.style.display = 'none';
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
 }
 
 function moveHero(e) {
-    if (e.key === 'ArrowRight') {
-        hero.dx = hero.speed;
-    } else if (e.key === 'ArrowLeft') {
-        hero.dx = -hero.speed;
+    if (!isMobile) {
+        if (e.key === 'ArrowRight') {
+            hero.dx = hero.speed;
+        } else if (e.key === 'ArrowLeft') {
+            hero.dx = -hero.speed;
+        }
     }
 }
 
 function stopHero(e) {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        hero.dx = 0;
+    if (!isMobile) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            hero.dx = 0;
+        }
     }
 }
 
@@ -711,6 +820,13 @@ function gameLoop() {
     drawGoal();
     drawLives();
     drawCoinsCollected();
+    drawSpeedBoosts();
+    if (bossSpeechBubbleVisible) {
+        drawSpeechBubble(ctx, currentLevel.boss.x - scrollOffset - 145, currentLevel.boss.y - 85, 205, 35, 10, "Focus on your happiness!");
+    }
+    if (heroSpeechBubbleVisible) {
+        drawHeroSpeechBubble();
+    }
     update();
 
     if (goalReached) {
@@ -736,7 +852,6 @@ document.addEventListener('touchstart', (e) => {
     }
 });
 
-// Menü-Navigation mit Pfeiltasten
 const menus = {
     startScreen: {
         buttons: document.querySelectorAll('#startScreen .menu button'),
@@ -790,70 +905,3 @@ document.addEventListener('keydown', (e) => {
 });
 
 updateFocusedButton(menus.startScreen);
-
-// Intro Animation
-function animateBossIntro(callback) {
-    let boss = currentLevel.boss;
-    let initialX = boss.x;
-    let step = 2;
-
-    function stepAnimation() {
-        if (boss.x > canvas.width / 2) {
-            boss.x -= step;
-            clear();
-            drawBackground();
-            drawPlatforms();
-            drawHero();
-            drawBoss();
-            drawEnemies();
-            drawCoins();
-            drawGoal();
-            drawLives();
-            drawCoinsCollected();
-            requestAnimationFrame(stepAnimation);
-        } else {
-            setTimeout(() => {
-                boss.messageDisplayed = true;
-                bossSpeechBubbleVisible = true;
-                drawSpeechBubble(ctx, boss.x - scrollOffset - 75, boss.y - 120, 220, 90, 10, "I am so sad and so alone,\nnobody is like me");
-                setTimeout(() => {
-                    bossSpeechBubbleVisible = false;
-                    heroSpeechBubbleVisible = true;
-                    drawHeroSpeechBubble();
-                    setTimeout(() => {
-                        heroSpeechBubbleVisible = false;
-                        boss.x = initialX;
-                        callback();
-                    }, 3000);
-                }, 3000);
-            }, 1000);
-        }
-    }
-
-    stepAnimation();
-}
-
-// Countdown
-function displayCountdown(callback) {
-    let countdown = 3;
-    const countdownInterval = setInterval(() => {
-        clear();
-        drawBackground();
-        drawHero();
-        drawPlatforms();
-        drawEnemies();
-        drawCoins();
-        drawBoss();
-        drawGoal();
-        drawLives();
-        drawCoinsCollected();
-        ctx.fillStyle = 'black';
-        ctx.font = '48px Arial';
-        ctx.fillText(countdown, canvas.width / 2 - 15, canvas.height / 2);
-        countdown--;
-        if (countdown < 0) {
-            clearInterval(countdownInterval);
-            callback();
-        }
-    }, 1000);
-}

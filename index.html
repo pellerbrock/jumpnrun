@@ -4,40 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>One Dimensional</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="startScreen" class="start-screen">
+    <canvas id="gameCanvas" width="800" height="800" style="display:none;"></canvas>
+    <button id="mobileStartButton" style="display: none;">Start</button>
+
+    <div class="start-screen" id="startScreen">
         <h1>One Dimensional</h1>
         <div class="menu">
-            <button id="playButton">Play</button>
-            <button id="controlsButton">Controls</button>
-            <button id="quitButton">Quit</button>
+            <button id="playButton">Spielen</button>
+            <button id="controlsButton">Tastenbelegung</button>
+            <button id="quitButton">Beenden</button>
         </div>
     </div>
-    <div id="controlsScreen" class="controls-screen">
-        <h2>Controls</h2>
-        <p>Use Arrow keys to move, Space to jump, X to attack</p>
-        <button id="backButton">Back</button>
+    <div class="controls-screen" id="controlsScreen" style="display:none;">
+        <h2>Tastenbelegung</h2>
+        <p>Pfeiltasten: Bewegen</p>
+        <p>Leertaste: Springen</p>
+        <p>X: Angreifen</p>
+        <button id="backButton">Zurück</button>
     </div>
-    <div id="levelSelection" class="level-selection">
+    <div class="character-selection" id="characterSelection" style="display:none;">
+        <img src="assets/hero1_idle.png" data-character="hero1" alt="Character 1">
+        <img src="assets/hero2_idle.png" data-character="hero2" alt="Character 2">
+        <img src="assets/hero3_idle.png" data-character="hero3" alt="Character 3">
+        <img src="assets/hero4_idle.png" data-character="hero4" alt="Character 4">
+        <img src="assets/hero5_idle.png" data-character="hero5" alt="Character 5">
+    </div>
+    <div class="level-selection" id="levelSelection" style="display:none;">
         <button data-level="0">Level 1</button>
         <button data-level="1">Level 2</button>
         <button data-level="2">Level 3</button>
         <button data-level="3">Level 4</button>
         <button data-level="4">Level 5</button>
     </div>
-    <div id="characterSelection" class="character-selection">
-        <img src="assets/hero1_idle.png" data-character="hero1" alt="Hero 1">
-        <img src="assets/hero2_idle.png" data-character="hero2" alt="Hero 2">
-        <img src="assets/hero3_idle.png" data-character="hero3" alt="Hero 3">
-        <img src="assets/hero4_idle.png" data-character="hero4" alt="Hero 4">
-        <img src="assets/hero5_idle.png" data-character="hero5" alt="Hero 5">
-    </div>
-    <canvas id="gameCanvas" width="360" height="640" style="display: none;"></canvas>
-    <audio id="backgroundMusic" loop>
-        <source src="assets/background_music.mp3" type="audio/mpeg">
-    </audio>
-    <script src="game.js"></script>
+    <audio id="backgroundMusic" src="assets/background_music.mp3" loop></audio>
+    <script src="js/game.js"></script>
 </body>
 </html>
