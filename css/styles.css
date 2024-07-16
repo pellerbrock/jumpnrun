@@ -126,7 +126,7 @@ canvas {
     left: 50%;
     transform: translateX(-50%);
     display: none;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
 }
 
