@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jump 'n' Run Game</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> <!-- Link zur Pixel-Schriftart -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="800" style="display:none;"></canvas>
     <button id="mobileStartButton" style="display: none;">Start</button>
+    <div id="mobileControls" style="display: none;">
+        <button id="moveLeftButton">Left</button>
+        <button id="moveRightButton">Right</button>
+        <button id="jumpButton">Jump</button>
+        <button id="attackButton">Attack</button>
+    </div>
 
     <div class="start-screen" id="startScreen">
         <h1>One Dimensional</h1>
@@ -40,15 +46,6 @@
         <button data-level="3">Level 4</button>
         <button data-level="4">Level 5</button>
     </div>
-
-    <!-- Steuerungselemente für Mobilgeräte -->
-    <div id="mobileControls" style="display: none;">
-        <button id="moveLeftButton" class="mobile-control">Links</button>
-        <button id="moveRightButton" class="mobile-control">Rechts</button>
-        <button id="jumpButton" class="mobile-control">Springen</button>
-        <button id="attackButton" class="mobile-control">Angreifen</button>
-    </div>
-
     <audio id="backgroundMusic" src="assets/background_music.mp3" loop></audio>
     <script src="js/game.js"></script>
 </body>

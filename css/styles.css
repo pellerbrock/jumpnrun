@@ -101,15 +101,36 @@ canvas {
     border: 2px solid #ffd700 !important;
 }
 
-/* Mobile-specific styles */
-@media (max-width: 600px) {
-    #mobileStartButton {
-        display: block;
-    }
+#mobileStartButton {
+    position: fixed;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #FFC107;
+    border: 2px solid #000;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: none;
+    font-size: 1em;
+    color: #000;
+    transition: background-color 0.3s;
 }
 
-#mobileStartButton {
+#mobileStartButton:hover {
+    background-color: #FFA500;
+}
+
+#mobileControls {
+    position: fixed;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
     display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+#mobileControls button {
     background-color: #FFC107;
     border: 2px solid #000;
     padding: 10px 20px;
@@ -118,39 +139,6 @@ canvas {
     transition: background-color 0.3s;
 }
 
-#mobileStartButton:hover {
-    background-color: #FFA500;
-}
-
-#moveLeftButton, #moveRightButton, #jumpButton, #attackButton {
-    position: fixed;
-    bottom: 20px;
-    background-color: #FFC107;
-    border: 2px solid #000;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 1em;
-    color: #000;
-    transition: background-color 0.3s;
-    z-index: 10; /* Make sure the buttons are above the canvas */
-}
-
-#moveLeftButton {
-    left: 20px;
-}
-
-#moveRightButton {
-    left: 100px;
-}
-
-#jumpButton {
-    right: 100px;
-}
-
-#attackButton {
-    right: 20px;
-}
-
-#moveLeftButton:hover, #moveRightButton:hover, #jumpButton:hover, #attackButton:hover {
+#mobileControls button:hover {
     background-color: #FFA500;
 }

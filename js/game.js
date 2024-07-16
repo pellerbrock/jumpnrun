@@ -42,23 +42,33 @@ mobileStartButton.addEventListener('click', () => {
     gameLoop();
 });
 
-moveLeftButton.addEventListener('touchstart', () => {
+moveLeftButton.addEventListener('touchstart', (e) => {
+    e.preventDefault();
     hero.dx = -hero.speed;
 });
 
-moveRightButton.addEventListener('touchstart', () => {
+moveRightButton.addEventListener('touchstart', (e) => {
+    e.preventDefault();
     hero.dx = hero.speed;
 });
 
-jumpButton.addEventListener('touchstart', jump);
+jumpButton.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    jump();
+});
 
-attackButton.addEventListener('touchstart', attack);
+attackButton.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    attack();
+});
 
-moveLeftButton.addEventListener('touchend', () => {
+moveLeftButton.addEventListener('touchend', (e) => {
+    e.preventDefault();
     hero.dx = 0;
 });
 
-moveRightButton.addEventListener('touchend', () => {
+moveRightButton.addEventListener('touchend', (e) => {
+    e.preventDefault();
     hero.dx = 0;
 });
 
@@ -101,11 +111,11 @@ let coinImage = new Image();
 let platformImage = new Image();
 let speedBoostImage = new Image();
 
-backgroundImage.src = 'assets/background.png';
+backgroundImage.src = 'assets/background2.png';
 enemyImage.src = 'assets/enemy_character.png';
 bossImage.src = 'assets/boss_character.png';
 coinImage.src = 'assets/coin.png';
-platformImage.src = 'assets/platform.png';
+platformImage.src = 'assets/platform2.png';
 speedBoostImage.src = 'assets/speedboost.png';
 
 hero2Images.idle.src = 'assets/hero2_idle.png';
@@ -898,12 +908,6 @@ document.addEventListener('keydown', (e) => {
 });
 document.addEventListener('keydown', (e) => {
     if (e.key === 'x') attack();
-});
-
-document.addEventListener('touchstart', (e) => {
-    if (isMobile) {
-        jump();
-    }
 });
 
 // Menü-Navigation mit Pfeiltasten
