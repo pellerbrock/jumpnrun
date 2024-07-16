@@ -5,13 +5,47 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#gameContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 canvas {
-    display: block;
-    margin: 20px auto;
     background-color: #87CEEB;
     border: 2px solid #000;
+}
+
+#mobileControls {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#mobileControls button {
+    background-color: #FFC107;
+    border: 2px solid #000;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#mobileControls button:hover {
+    background-color: #FFA500;
 }
 
 .start-screen, .controls-screen, .character-selection, .level-selection {
@@ -45,12 +79,6 @@ canvas {
 
 .character-selection img.focused {
     border: 2px solid #FFC107;
-}
-
-canvas {
-    display: block;
-    margin: 0 auto;
-    background-color: #000;
 }
 
 .start-screen, .controls-screen, .character-selection, .level-selection {
@@ -117,28 +145,5 @@ canvas {
 }
 
 #mobileStartButton:hover {
-    background-color: #FFA500;
-}
-
-#mobileControls {
-    position: fixed;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    display: none;
-    flex-direction: row;
-    align-items: center;
-}
-
-#mobileControls button {
-    background-color: #FFC107;
-    border: 2px solid #000;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#mobileControls button:hover {
     background-color: #FFA500;
 }

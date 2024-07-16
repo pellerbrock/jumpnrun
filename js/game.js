@@ -22,8 +22,8 @@ const attackButton = document.getElementById('attackButton');
 let isMobile = false;
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.6;
 }
 
 function checkMobile() {
@@ -34,8 +34,12 @@ function checkMobile() {
     }
 }
 
-window.addEventListener('resize', checkMobile);
+window.addEventListener('resize', () => {
+    checkMobile();
+    resizeCanvas();
+});
 checkMobile();
+resizeCanvas();
 
 moveLeftButton.addEventListener('touchstart', (e) => {
     e.preventDefault();
@@ -64,8 +68,7 @@ moveLeftButton.addEventListener('touchend', (e) => {
 
 moveRightButton.addEventListener('touchend', (e) => {
     e.preventDefault();
-    hero.dx = 0;
-});
+    hero.dx = 0});
 
 let heroImages = {
     idle: new Image(),
@@ -177,9 +180,10 @@ const levels = [
             { x: 850, y: canvas.height - 350, width: 20, height: 20, collected: false },
             { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
         ],
-        
+       
         boss: null,
         speedBoosts: [
+           
         ]
     },
     {
@@ -285,6 +289,7 @@ const levels = [
             { x: 450, y: canvas.height - 240, width: 30, height: 30, collected: false }
         ]
     },
+
 ];
 
 let currentLevelIndex = 0;
@@ -379,13 +384,11 @@ function drawHero() {
 }
 
 function drawBackground() {
-    const backgroundWidth = backgroundImage.width;
-    const backgroundHeight = backgroundImage.height;
-    const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
+    const backgroundWidth = 800;
+    const backgroundHeight = 800;
+    const startY = canvas.height - backgroundHeight;
 
-    for (let i = 0; i <= repeatCount; i++) {
-        ctx.drawImage(backgroundImage, i * backgroundWidth - scrollOffset % backgroundWidth, 0, backgroundWidth, backgroundHeight);
-    }
+    ctx.drawImage(backgroundImage, 0, startY, backgroundWidth, backgroundHeight);
 }
 
 function drawPlatforms() {
