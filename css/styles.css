@@ -5,13 +5,16 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
+    overflow: hidden; /* Verhindert das Scrollen */
 }
 
 canvas {
     display: block;
-    margin: 20px auto;
+    margin: 0 auto;
     background-color: #87CEEB;
     border: 2px solid #000;
+    width: 100vw; /* Volle Breite des Viewports */
+    height: 100vh; /* Volle Höhe des Viewports */
 }
 
 .start-screen, .controls-screen, .character-selection, .level-selection {

@@ -94,11 +94,11 @@ let coinImage = new Image();
 let platformImage = new Image();
 let speedBoostImage = new Image();
 
-backgroundImage.src = 'assets/background2.png';
+backgroundImage.src = 'assets/background.png';
 enemyImage.src = 'assets/enemy_character.png';
 bossImage.src = 'assets/boss_character.png';
 coinImage.src = 'assets/coin.png';
-platformImage.src = 'assets/platform2.png';
+platformImage.src = 'assets/platform.png';
 speedBoostImage.src = 'assets/speedboost.png';
 
 hero2Images.idle.src = 'assets/hero2_idle.png';
@@ -134,7 +134,7 @@ let hero = {
     y: canvas.height - 275,
     width: 37.5,
     height: 60,
-    speed: 5,
+    speed: 3,
     dx: 0,
     dy: 0,
     jumping: false,
@@ -165,18 +165,8 @@ const levels = [
             { x: 850, y: canvas.height - 350, width: 20, height: 20, collected: false },
             { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
         ],
-        boss: {
-            x: 825,
-            y: canvas.height - 170,
-            width: 50,
-            height: 50,
-            originalY: canvas.height - 570,
-            dy: 0,
-            health: 5,
-            intro: true
-        },
+        boss: null,
         speedBoosts: [
-            { x: 500, y: canvas.height - 150, width: 30, height: 30, collected: false }
         ]
     },
     {
