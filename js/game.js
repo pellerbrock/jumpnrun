@@ -111,11 +111,11 @@ let coinImage = new Image();
 let platformImage = new Image();
 let speedBoostImage = new Image();
 
-backgroundImage.src = 'assets/background2.png';
+backgroundImage.src = 'assets/background.png';
 enemyImage.src = 'assets/enemy_character.png';
 bossImage.src = 'assets/boss_character.png';
 coinImage.src = 'assets/coin.png';
-platformImage.src = 'assets/platform2.png';
+platformImage.src = 'assets/platform.png';
 speedBoostImage.src = 'assets/speedboost.png';
 
 hero2Images.idle.src = 'assets/hero2_idle.png';
