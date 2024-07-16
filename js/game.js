@@ -1,33 +1,51 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const backgroundMusic = document.getElementById('backgroundMusic');
-const mobileStartButton = document.getElementById('mobileStartButton');
+const backToMenuButton = document.createElement('button');
+backToMenuButton.innerText = "Zurück zum Menü";
+backToMenuButton.id = "backToMenuButton";
+backToMenuButton.style.display = 'none';
+document.body.appendChild(backToMenuButton);
+
+const mobileStartButton = document.createElement('button');
+mobileStartButton.innerText = "Start";
+mobileStartButton.id = "mobileStartButton";
+mobileStartButton.style.display = 'none';
+document.body.appendChild(mobileStartButton);
 
 let isMobile = false;
 let autoRun = false;
 
-function resizeCanvas() {
-    if (window.innerWidth < window.innerHeight) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+// Function to check if the device is mobile based on screen size
+function checkMobile() {
+    if (window.innerWidth < 768) {
         isMobile = true;
+        mobileStartButton.style.display = 'block';
     } else {
-        canvas.width = 800;
-        canvas.height = 800;
         isMobile = false;
+        mobileStartButton.style.display = 'none';
     }
-    adjustGameElements();
+}
+
+window.addEventListener('resize', checkMobile);
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if (gameStarted) {
+        adjustGameElements();
+    }
 }
 
 function adjustGameElements() {
-    hero.y = canvas.height - hero.height - 50;
+    hero.x = canvas.width / 10;
+    hero.y = canvas.height - hero.height - 100;
     currentLevel.platforms.forEach(platform => {
-        platform.y = canvas.height - 115;
+        platform.y = canvas.height - platform.height - 100;
     });
 }
 
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
 
 mobileStartButton.addEventListener('click', () => {
     autoRun = true;
@@ -98,17 +116,17 @@ hero5Images.walk2.src = 'assets/hero5_walk2.png';
 
 // Portal Animation Setup
 const portalFrames = [];
-const portalFrameCount = 4;
+const portalFrameCount = 4; // Anzahl der Frames in der Animation
 let currentPortalFrame = 0;
 
-// Load portal images
+// Portalbilder laden
 for (let i = 1; i <= portalFrameCount; i++) {
     let img = new Image();
     img.src = `assets/portal${i}.png`;
     portalFrames.push(img);
 }
 
-let portalAnimationInterval = 200;
+let portalAnimationInterval = 200; // Zeit in Millisekunden zwischen den Frames
 let lastPortalFrameChange = 0;
 
 let hero = {
@@ -120,7 +138,7 @@ let hero = {
     dx: 0,
     dy: 0,
     jumping: false,
-    lives: 3,
+    lives: 3, // Anzahl der Leben
     coinsCollected: 0,
     currentImage: heroImages.idle,
     walkCounter: 0,
@@ -131,8 +149,9 @@ let hero = {
 let scrollOffset = 0;
 
 const levels = [
+    // Your levels configuration
     {
-        platforms: [
+        platforms: [ // Level 1
             { x: 0, y: canvas.height - 115, width: 1800, height: 10, visible: false },
             { x: 700, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
             { x: 900, y: canvas.height - 210, width: 60, height: 30, visible: true, image: platformImage },
@@ -161,7 +180,7 @@ const levels = [
         ]
     },
     {
-        platforms: [
+        platforms: [ // Level 2
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 150, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
             { x: 350, y: canvas.height - 190, width: 100, height: 30, visible: true, image: platformImage },
@@ -186,8 +205,9 @@ const levels = [
             { x: 600, y: canvas.height - 350, width: 30, height: 30, collected: false }
         ]
     },
+    // Weitere Level hinzufügen
     {
-        platforms: [
+        platforms: [ // Level 3
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 290, y: canvas.height - 220, width: 100, height: 30, visible: true, image: platformImage },
             { x: 490, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
@@ -209,7 +229,7 @@ const levels = [
         ]
     },
     {
-        platforms: [
+        platforms: [ // Level 4
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 200, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
             { x: 400, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
@@ -232,7 +252,7 @@ const levels = [
         ]
     },
     {
-        platforms: [
+        platforms: [ // Level 5 
             { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
             { x: 100, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
             { x: 300, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
@@ -305,6 +325,7 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
             console.log("Hero images loaded successfully.");
             document.getElementById('characterSelection').style.display = 'none';
             canvas.style.display = 'block';
+            backToMenuButton.style.display = 'block';
             if (!isMobile) {
                 gameStarted = true;
                 backgroundMusic.play();
@@ -332,12 +353,36 @@ document.getElementById('levelSelection').addEventListener('click', (e) => {
     }
 });
 
+backToMenuButton.addEventListener('click', () => {
+    resetToMainMenu();
+});
+
+function resetToMainMenu() {
+    gameStarted = false;
+    hero.lives = 3;
+    hero.coinsCollected = 0;
+    currentLevelIndex = 0;
+    currentLevel = levels[currentLevelIndex];
+    resetHeroPosition();
+    canvas.style.display = 'none';
+    backToMenuButton.style.display = 'none';
+    document.getElementById('startScreen').style.display = 'flex';
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+}
+
 function drawHero() {
     ctx.drawImage(hero.currentImage, hero.x, hero.y, hero.width, hero.height);
 }
 
 function drawBackground() {
-    ctx.drawImage(backgroundImage, -scrollOffset, 0, canvas.width + scrollOffset, canvas.height);
+    const backgroundWidth = backgroundImage.width;
+    const backgroundHeight = backgroundImage.height;
+    const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
+
+    for (let i = 0; i <= repeatCount; i++) {
+        ctx.drawImage(backgroundImage, i * backgroundWidth - scrollOffset % backgroundWidth, 0, backgroundWidth, backgroundHeight);
+    }
 }
 
 function drawPlatforms() {
@@ -466,6 +511,7 @@ function drawGoal() {
     drawPortal();
 }
 
+// Funktion zum Zeichnen des animierten Portals
 function drawPortal() {
     if (Date.now() - lastPortalFrameChange > portalAnimationInterval) {
         currentPortalFrame = (currentPortalFrame + 1) % portalFrameCount;
@@ -483,7 +529,7 @@ function drawLives() {
 
 function drawCoinsCollected() {
     ctx.fillStyle = 'black';
-    ctx.font = '15px "Press Start 2P", cursive';;
+    ctx.font = '15px "Press Start 2P", cursive';
     ctx.fillText('Confidence: ' + hero.coinsCollected, 10, 60);
     ctx.fillText('Level: ' + (currentLevelIndex + 1), 10, 90);
 }
@@ -500,10 +546,10 @@ function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-let animationActive = true;
+let animationActive = true; // Globale Variable, um den Animationsstatus zu verfolgen
 
 function startEndAnimation() {
-    if (!animationActive) return;
+    if (!animationActive) return; // Animation überspringen, wenn sie deaktiviert ist
 
     let hero2 = { x: -50, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero2Images, currentImage: hero2Images.walk1, reachedPosition: false };
     let hero3 = { x: -100, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero3Images, currentImage: hero3Images.walk1, reachedPosition: false };
@@ -529,7 +575,7 @@ function startEndAnimation() {
     }
 
     function animateHeroes() {
-        if (!animationActive) return;
+        if (!animationActive) return; // Animation überspringen, wenn sie deaktiviert ist
 
         clear();
         drawBackground();
@@ -572,6 +618,7 @@ function startEndAnimation() {
     animateHeroes();
 }
 
+// Funktion zum Aktivieren/Deaktivieren der Animation
 function toggleAnimation() {
     animationActive = !animationActive;
     if (animationActive) {
@@ -579,8 +626,9 @@ function toggleAnimation() {
     }
 }
 
+// Beispiel: Animation durch Tastendruck ein-/ausschalten
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'a') {
+    if (e.key === 'a') { // 'a' Taste zum Ein-/Ausschalten der Animation
         toggleAnimation();
     }
 });
@@ -703,7 +751,7 @@ function update() {
 
     if (hero.dx !== 0 && !hero.jumping && !hero.isAttacking) {
         hero.walkCounter++;
-        if (hero.walkCounter % 30 < 15) {
+        if (hero.walkCounter % 30 < 15) {  // Adjusted walk animation speed
             hero.currentImage = heroImages.walk1;
         } else {
             hero.currentImage = heroImages.walk2;
@@ -744,6 +792,7 @@ function resetToCharacterSelection() {
     resetHeroPosition();
     document.getElementById('characterSelection').style.display = 'flex';
     canvas.style.display = 'none';
+    backToMenuButton.style.display = 'none';
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
 }
@@ -852,6 +901,7 @@ document.addEventListener('touchstart', (e) => {
     }
 });
 
+// Menü-Navigation mit Pfeiltasten
 const menus = {
     startScreen: {
         buttons: document.querySelectorAll('#startScreen .menu button'),
@@ -905,3 +955,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 updateFocusedButton(menus.startScreen);
+
+// Initialize canvas size and check mobile settings
+resizeCanvas();
+checkMobile();

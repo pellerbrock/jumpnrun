@@ -5,17 +5,13 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Verhindert das Scrollen */
 }
 
 canvas {
     display: block;
-    margin: 0 auto;
+    margin: 20px auto;
     background-color: #87CEEB;
     border: 2px solid #000;
-    position: absolute; /* Ermöglicht das Positionieren auf dem gesamten Bildschirm */
-    top: 0;
-    left: 0;
 }
 
 .start-screen, .controls-screen, .character-selection, .level-selection {
@@ -24,10 +20,6 @@ canvas {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    width: 100vw;
-    position: absolute; /* Verhindert das Scrollen */
-    top: 0;
-    left: 0;
 }
 
 .menu button, .controls-screen button, .level-selection button {
@@ -53,6 +45,22 @@ canvas {
 
 .character-selection img.focused {
     border: 2px solid #FFC107;
+    
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+    background-color: #000;
+}
+
+.start-screen, .controls-screen, .character-selection, .level-selection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
 }
 
 .start-screen h1, .controls-screen h2 {
@@ -95,6 +103,7 @@ canvas {
 }
 
 #mobileStartButton {
+    display: none;
     position: fixed;
     bottom: 10%;
     left: 50%;
@@ -102,10 +111,9 @@ canvas {
     background-color: #FFC107;
     border: 2px solid #000;
     padding: 10px 20px;
-    cursor: pointer;
-    display: none;
     font-size: 1em;
     color: #000;
+    cursor: pointer;
     transition: background-color 0.3s;
 }
 
