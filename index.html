@@ -3,97 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Dimensional</title>
+    <title>Jump 'n' Run Game</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> <!-- Link zur Pixel-Schriftart -->
-    <style>
-        body {
-            font-family: 'Press Start 2P', cursive;
-            background-color: #000;
-            color: #fff;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        canvas {
-            display: block;
-            margin: 0 auto;
-            background-color: #000;
-        }
-
-        .start-screen, .controls-screen, .character-selection, .level-selection {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #fff;
-        }
-
-        .start-screen h1, .controls-screen h2 {
-            font-size: 2em;
-            color: #ffd700;
-            margin-bottom: 20px;
-        }
-
-        .menu button, .character-selection img, .level-selection button {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 1em;
-            color: #000;
-            background-color: #FFC107;
-            border: 2px solid #FFC107;
-            margin: 10px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .menu button:hover, .menu button.selected, .character-selection img:hover, .character-selection img.selected, .level-selection button:hover, .level-selection button.selected {
-            background-color: #000;
-            color: #FFC107;
-            border: 2px solid #FFC107;
-        }
-
-        .character-selection img, .level-selection button {
-            height: 80px;
-        }
-
-        #backButton {
-            margin-top: 20px;
-        }
-
-        /* Highlight the selected menu item */
-        .selected {
-            background-color: #000 !important;
-            color: #ffd700 !important;
-            border: 2px solid #ffd700 !important;
-        }
-
-        #mobileStartButton {
-            display: none;
-            position: fixed;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #FFC107;
-            border: 2px solid #000;
-            padding: 10px 20px;
-            font-size: 1em;
-            color: #000;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #mobileStartButton:hover {
-            background-color: #FFA500;
-        }
-    </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="800" style="display:none;"></canvas>
-    <button id="mobileStartButton">Start</button>
+    <button id="mobileStartButton" style="display: none;">Start</button>
 
     <div class="start-screen" id="startScreen">
         <h1>One Dimensional</h1>
@@ -124,6 +40,15 @@
         <button data-level="3">Level 4</button>
         <button data-level="4">Level 5</button>
     </div>
+
+    <!-- Steuerungselemente für Mobilgeräte -->
+    <div id="mobileControls" style="display: none;">
+        <button id="moveLeftButton" class="mobile-control">Links</button>
+        <button id="moveRightButton" class="mobile-control">Rechts</button>
+        <button id="jumpButton" class="mobile-control">Springen</button>
+        <button id="attackButton" class="mobile-control">Angreifen</button>
+    </div>
+
     <audio id="backgroundMusic" src="assets/background_music.mp3" loop></audio>
     <script src="js/game.js"></script>
 </body>

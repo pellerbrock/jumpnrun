@@ -7,16 +7,20 @@ backToMenuButton.id = "backToMenuButton";
 backToMenuButton.style.display = 'none';
 document.body.appendChild(backToMenuButton);
 
-const mobileStartButton = document.createElement('button');
-mobileStartButton.innerText = "Start";
-mobileStartButton.id = "mobileStartButton";
-mobileStartButton.style.display = 'none';
-document.body.appendChild(mobileStartButton);
+const mobileStartButton = document.getElementById('mobileStartButton');
+const mobileControls = document.getElementById('mobileControls');
+const moveLeftButton = document.getElementById('moveLeftButton');
+const moveRightButton = document.getElementById('moveRightButton');
+const jumpButton = document.getElementById('jumpButton');
+const attackButton = document.getElementById('attackButton');
 
 let isMobile = false;
-let autoRun = false;
 
-// Function to check if the device is mobile based on screen size
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
 function checkMobile() {
     if (window.innerWidth < 768) {
         isMobile = true;
@@ -28,31 +32,34 @@ function checkMobile() {
 }
 
 window.addEventListener('resize', checkMobile);
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    if (gameStarted) {
-        adjustGameElements();
-    }
-}
-
-function adjustGameElements() {
-    hero.x = canvas.width / 10;
-    hero.y = canvas.height - hero.height - 100;
-    currentLevel.platforms.forEach(platform => {
-        platform.y = canvas.height - platform.height - 100;
-    });
-}
-
-window.addEventListener('resize', resizeCanvas);
+checkMobile();
 
 mobileStartButton.addEventListener('click', () => {
-    autoRun = true;
     mobileStartButton.style.display = 'none';
+    mobileControls.style.display = 'block';
     gameStarted = true;
     backgroundMusic.play();
     gameLoop();
+});
+
+moveLeftButton.addEventListener('touchstart', () => {
+    hero.dx = -hero.speed;
+});
+
+moveRightButton.addEventListener('touchstart', () => {
+    hero.dx = hero.speed;
+});
+
+jumpButton.addEventListener('touchstart', jump);
+
+attackButton.addEventListener('touchstart', attack);
+
+moveLeftButton.addEventListener('touchend', () => {
+    hero.dx = 0;
+});
+
+moveRightButton.addEventListener('touchend', () => {
+    hero.dx = 0;
 });
 
 let heroImages = {
@@ -126,7 +133,7 @@ for (let i = 1; i <= portalFrameCount; i++) {
     portalFrames.push(img);
 }
 
-let portalAnimationInterval = 200; // Zeit in Millisekunden zwischen den Frames
+let portalAnimationInterval = 500; // Zeit in Millisekunden zwischen den Frames
 let lastPortalFrameChange = 0;
 
 let hero = {
@@ -134,7 +141,7 @@ let hero = {
     y: canvas.height - 275,
     width: 37.5,
     height: 60,
-    speed: 3,
+    speed: 5,
     dx: 0,
     dy: 0,
     jumping: false,
@@ -165,8 +172,18 @@ const levels = [
             { x: 850, y: canvas.height - 350, width: 20, height: 20, collected: false },
             { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
         ],
-        boss: null,
+        boss: {
+            x: 825,
+            y: canvas.height - 170,
+            width: 50,
+            height: 50,
+            originalY: canvas.height - 570,
+            dy: 0,
+            health: 5,
+            intro: true
+        },
         speedBoosts: [
+            { x: 500, y: canvas.height - 150, width: 30, height: 30, collected: false }
         ]
     },
     {
@@ -357,6 +374,7 @@ function resetToMainMenu() {
     canvas.style.display = 'none';
     backToMenuButton.style.display = 'none';
     document.getElementById('startScreen').style.display = 'flex';
+    mobileControls.style.display = 'none';
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
 }
@@ -624,10 +642,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 function update() {
-    if (autoRun) {
-        hero.dx = hero.speed;
-    }
-
     hero.x += hero.dx;
     hero.y += hero.dy;
 
@@ -663,11 +677,11 @@ function update() {
             hero.y < enemy.y + enemy.height) {
             hero.lives--;
             if (hero.lives <= 0) {
-                setTimeout(resetToCharacterSelection);
+                setTimeout(resetToCharacterSelection, 1000);
                 displayMessage("You Died!");
             } else {
                 displayMessage("You Died!");
-                setTimeout(resetHeroPosition);
+                setTimeout(resetHeroPosition, 1000);
             }
         }
     });
@@ -723,10 +737,10 @@ function update() {
             hero.lives--;
             if (hero.lives <= 0) {
                 displayMessage("Du bist gestorben!");
-                setTimeout(resetToCharacterSelection);
+                setTimeout(resetToCharacterSelection, 1000);
             } else {
                 displayMessage("Du bist gestorben!");
-                setTimeout(resetHeroPosition);
+                setTimeout(resetHeroPosition, 1000);
             }
         }
     }
@@ -783,6 +797,7 @@ function resetToCharacterSelection() {
     document.getElementById('characterSelection').style.display = 'flex';
     canvas.style.display = 'none';
     backToMenuButton.style.display = 'none';
+    mobileControls.style.display = 'none';
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
 }
@@ -946,6 +961,4 @@ document.addEventListener('keydown', (e) => {
 
 updateFocusedButton(menus.startScreen);
 
-// Initialize canvas size and check mobile settings
 resizeCanvas();
-checkMobile();
