@@ -7,7 +7,12 @@ backToMenuButton.id = "backToMenuButton";
 backToMenuButton.style.display = 'none';
 document.body.appendChild(backToMenuButton);
 
-const mobileStartButton = document.getElementById('mobileStartButton');
+const mobileStartButton = document.createElement('button');
+mobileStartButton.innerText = "Start";
+mobileStartButton.id = "mobileStartButton";
+mobileStartButton.style.display = 'none';
+document.body.appendChild(mobileStartButton);
+
 const mobileControls = document.getElementById('mobileControls');
 const moveLeftButton = document.getElementById('moveLeftButton');
 const moveRightButton = document.getElementById('moveRightButton');
@@ -24,23 +29,13 @@ function resizeCanvas() {
 function checkMobile() {
     if (window.innerWidth < 768) {
         isMobile = true;
-        mobileStartButton.style.display = 'block';
     } else {
         isMobile = false;
-        mobileStartButton.style.display = 'none';
     }
 }
 
 window.addEventListener('resize', checkMobile);
 checkMobile();
-
-mobileStartButton.addEventListener('click', () => {
-    mobileStartButton.style.display = 'none';
-    mobileControls.style.display = 'block';
-    gameStarted = true;
-    backgroundMusic.play();
-    gameLoop();
-});
 
 moveLeftButton.addEventListener('touchstart', (e) => {
     e.preventDefault();
@@ -143,7 +138,7 @@ for (let i = 1; i <= portalFrameCount; i++) {
     portalFrames.push(img);
 }
 
-let portalAnimationInterval = 500; // Zeit in Millisekunden zwischen den Frames
+let portalAnimationInterval = 200; // Zeit in Millisekunden zwischen den Frames
 let lastPortalFrameChange = 0;
 
 let hero = {
@@ -182,18 +177,9 @@ const levels = [
             { x: 850, y: canvas.height - 350, width: 20, height: 20, collected: false },
             { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
         ],
-        boss: {
-            x: 825,
-            y: canvas.height - 170,
-            width: 50,
-            height: 50,
-            originalY: canvas.height - 570,
-            dy: 0,
-            health: 5,
-            intro: true
-        },
+        
+        boss: null,
         speedBoosts: [
-            { x: 500, y: canvas.height - 150, width: 30, height: 30, collected: false }
         ]
     },
     {
@@ -343,17 +329,7 @@ document.getElementById('characterSelection').addEventListener('click', (e) => {
             document.getElementById('characterSelection').style.display = 'none';
             canvas.style.display = 'block';
             backToMenuButton.style.display = 'block';
-            if (!isMobile) {
-                gameStarted = true;
-                backgroundMusic.play();
-                if (currentLevelIndex === 0 && currentLevel.boss && currentLevel.boss.intro) {
-                    animateBossIntro(() => {
-                        displayHeroSpeechBubble("Swallow your problems\nand comfort him...", 2000, gameLoop);
-                    });
-                } else {
-                    gameLoop();
-                }
-            }
+            mobileStartButton.style.display = isMobile ? 'block' : 'none';
         };
         heroImages.idle.onerror = () => {
             console.error("Error loading hero images.");
@@ -374,6 +350,14 @@ backToMenuButton.addEventListener('click', () => {
     resetToMainMenu();
 });
 
+mobileStartButton.addEventListener('click', () => {
+    gameStarted = true;
+    mobileStartButton.style.display = 'none';
+    mobileControls.style.display = 'flex';
+    backgroundMusic.play();
+    gameLoop();
+});
+
 function resetToMainMenu() {
     gameStarted = false;
     hero.lives = 3;
@@ -383,8 +367,9 @@ function resetToMainMenu() {
     resetHeroPosition();
     canvas.style.display = 'none';
     backToMenuButton.style.display = 'none';
-    document.getElementById('startScreen').style.display = 'flex';
+    mobileStartButton.style.display = 'none';
     mobileControls.style.display = 'none';
+    document.getElementById('startScreen').style.display = 'flex';
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
 }
