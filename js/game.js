@@ -183,17 +183,17 @@ const levels = [
         background: backgroundImage,
         platforms: [ // Level 1
             { x: 0, y: canvas.height - 85 * scaleFactor, width: 4800 * scaleFactor, height: 10 * scaleFactor, visible: false },
-            { x: 700, y: canvas.height - 210 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 900, y: canvas.height - 190 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 1100, y: canvas.height - 220 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
+            { x: 600, y: canvas.height - 210 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 800, y: canvas.height - 190 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 1000, y: canvas.height - 220 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
         ],
         enemies: [
-            { x: 1000, y: canvas.height - 200 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 200 * scaleFactor, dy: 0.5 * scaleFactor }
+            { x: 900, y: canvas.height - 200 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 200 * scaleFactor, dy: 0.5 * scaleFactor }
         ],
-        goal: { x: 1250, y: canvas.height - 340 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
+        goal: { x: 1150, y: canvas.height - 340 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
         coins: [
-            { x: 850, y: canvas.height - 330 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false },
-            { x: 1050, y: canvas.height - 310 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
+            { x: 750, y: canvas.height - 330 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false },
+            { x: 950, y: canvas.height - 310 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
         ],
        
         boss: null,
