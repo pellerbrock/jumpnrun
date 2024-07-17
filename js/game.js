@@ -25,6 +25,7 @@ let scaleFactor = 1;
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
     canvas.height = window.innerHeight * 0.6;
+    scaleFactor = canvas.height / 600;  // Adjust the scale factor based on the height of the canvas
 }
 
 function checkMobile() {
@@ -390,7 +391,7 @@ function drawHero() {
 
 function drawBackground() {
     const backgroundWidth = 800 * scaleFactor;
-    const backgroundHeight = 600 * scaleFactor;
+    const backgroundHeight = canvas.height;
     const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
 
     for (let i = 0; i <= repeatCount; i++) {
