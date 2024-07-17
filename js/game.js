@@ -20,6 +20,7 @@ const jumpButton = document.getElementById('jumpButton');
 const attackButton = document.getElementById('attackButton');
 
 let isMobile = false;
+let scaleFactor = 1;
 
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
@@ -68,8 +69,7 @@ moveLeftButton.addEventListener('touchend', (e) => {
 
 moveRightButton.addEventListener('touchend', (e) => {
     e.preventDefault();
-    hero.dx = 0;
-});
+    hero.dx = 0});
 
 let heroImages = {
     idle: new Image(),
@@ -83,7 +83,6 @@ let hero2Images = {
     idle: new Image(),
     walk1: new Image(),
     walk2: new Image(),
-    jump: new Image(),
     attack: new Image()
 };
 
@@ -91,7 +90,6 @@ let hero3Images = {
     idle: new Image(),
     walk1: new Image(),
     walk2: new Image(),
-    jump: new Image(),
     attack: new Image()
 };
 
@@ -99,7 +97,6 @@ let hero4Images = {
     idle: new Image(),
     walk1: new Image(),
     walk2: new Image(),
-    jump: new Image(),
     attack: new Image()
 };
 
@@ -107,7 +104,6 @@ let hero5Images = {
     idle: new Image(),
     walk1: new Image(),
     walk2: new Image(),
-    jump: new Image(),
     attack: new Image()
 };
 
@@ -128,25 +124,18 @@ speedBoostImage.src = 'assets/speedboost.png';
 hero2Images.idle.src = 'assets/hero2_idle.png';
 hero2Images.walk1.src = 'assets/hero2_walk1.png';
 hero2Images.walk2.src = 'assets/hero2_walk2.png';
-hero2Images.jump.src = 'assets/hero2_jump.png';
 hero2Images.attack.src = 'assets/hero2_attack.png';
-
 hero3Images.idle.src = 'assets/hero3_idle.png';
 hero3Images.walk1.src = 'assets/hero3_walk1.png';
 hero3Images.walk2.src = 'assets/hero3_walk2.png';
-hero3Images.jump.src = 'assets/hero3_jump.png';
 hero3Images.attack.src = 'assets/hero3_attack.png';
-
 hero4Images.idle.src = 'assets/hero4_idle.png';
 hero4Images.walk1.src = 'assets/hero4_walk1.png';
 hero4Images.walk2.src = 'assets/hero4_walk2.png';
-hero4Images.jump.src = 'assets/hero4_jump.png';
 hero4Images.attack.src = 'assets/hero4_attack.png';
-
 hero5Images.idle.src = 'assets/hero5_idle.png';
 hero5Images.walk1.src = 'assets/hero5_walk1.png';
 hero5Images.walk2.src = 'assets/hero5_walk2.png';
-hero5Images.jump.src = 'assets/hero5_jump.png';
 hero5Images.attack.src = 'assets/hero5_attack.png';
 
 // Portal Animation Setup
@@ -166,9 +155,9 @@ let lastPortalFrameChange = 0;
 
 let hero = {
     x: 50,
-    y: canvas.height - 275,
-    width: 37.5,
-    height: 60,
+    y: canvas.height - 275 * scaleFactor,
+    width: 37.5 * scaleFactor,
+    height: 60 * scaleFactor,
     speed: 5,
     dx: 0,
     dy: 0,
@@ -187,123 +176,123 @@ const levels = [
     // Your levels configuration
     {
         platforms: [ // Level 1
-            { x: 0, y: canvas.height - 115, width: 1800, height: 10, visible: false },
-            { x: 700, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 900, y: canvas.height - 210, width: 60, height: 30, visible: true, image: platformImage },
-            { x: 1100, y: canvas.height - 190, width: 60, height: 30, visible: true, image: platformImage }
+            { x: 0, y: canvas.height - 85 * scaleFactor, width: 1800 * scaleFactor, height: 10 * scaleFactor, visible: false },
+            { x: 700, y: canvas.height - 210 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 190 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 1100, y: canvas.height - 220 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
         ],
         enemies: [
-            { x: 1000, y: canvas.height - 220, width: 25, height: 25, originalY: canvas.height - 220, dy: 0.5 }
+            { x: 1000, y: canvas.height - 200 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 200 * scaleFactor, dy: 0.5 * scaleFactor }
         ],
-        goal: { x: 1250, y: canvas.height - 360, width: 50, height: 50 },
+        goal: { x: 1250, y: canvas.height - 340 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
         coins: [
-            { x: 850, y: canvas.height - 350, width: 20, height: 20, collected: false },
-            { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
+            { x: 850, y: canvas.height - 330 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false },
+            { x: 1050, y: canvas.height - 310 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
         ],
+       
         boss: null,
-        speedBoosts: []
+        speedBoosts: [
+           
+        ]
     },
     {
         platforms: [ // Level 2
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
-            { x: 150, y: canvas.height - 230, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 350, y: canvas.height - 190, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 350, y: canvas.height - 390, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 500, y: canvas.height - 270, width: 60, height: 30, visible: true, image: platformImage },
-            { x: 580, y: canvas.height - 470, width: 90, height: 30, visible: true, image: platformImage },
-            { x: 700, y: canvas.height - 340, width: 60, height: 30, visible: true, image: platformImage },
-            { x: 850, y: canvas.height - 320, width: 60, height: 30, visible: true, image: platformImage },
-            { x: 730, y: canvas.height - 470, width: 180, height: 30, visible: true, image: platformImage }
+            { x: 0, y: canvas.height - 115 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 150, y: canvas.height - 230 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 190 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 390 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 270 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 580, y: canvas.height - 470 * scaleFactor, width: 90 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 340 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 850, y: canvas.height - 320 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 730, y: canvas.height - 470 * scaleFactor, width: 180 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
         ],
         enemies: [
-            { x: 270, y: canvas.height - 230, width: 25, height: 25, originalY: canvas.height - 230, dy: 0.5 },
-            { x: 780, y: canvas.height - 420, width: 50, height: 50, originalY: canvas.height - 420, dy: 0.3 }
+            { x: 270, y: canvas.height - 230 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 230 * scaleFactor, dy: 0.5 * scaleFactor },
+            { x: 780, y: canvas.height - 420 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor, originalY: canvas.height - 420 * scaleFactor, dy: 0.3 * scaleFactor }
         ],
-        goal: { x: 950, y: canvas.height - 410, width: 50, height: 50 },
+        goal: { x: 950, y: canvas.height - 410 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
         coins: [
-            { x: 400, y: canvas.height - 250, width: 20, height: 20, collected: false },
-            { x: 620, y: canvas.height - 330, width: 20, height: 20, collected: false }
+            { x: 400, y: canvas.height - 250 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false },
+            { x: 620, y: canvas.height - 330 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
         ],
         boss: null,
         speedBoosts: [
-            { x: 600, y: canvas.height - 350, width: 30, height: 30, collected: false }
+            { x: 600, y: canvas.height - 350 * scaleFactor, width: 30 * scaleFactor, height: 30 * scaleFactor, collected: false }
         ]
     },
     // Weitere Level hinzufügen
     {
         platforms: [ // Level 3
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
-            { x: 290, y: canvas.height - 220, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 490, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 690, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 890, y: canvas.height - 370, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 0, y: canvas.height - 115 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 290, y: canvas.height - 220 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 490, y: canvas.height - 250 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 690, y: canvas.height - 300 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 890, y: canvas.height - 370 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
         ],
         enemies: [
-            { x: 400, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
-            { x: 800, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+            { x: 400, y: canvas.height - 270 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 270 * scaleFactor, dy: 0.4 * scaleFactor },
+            { x: 800, y: canvas.height - 370 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor, originalY: canvas.height - 370 * scaleFactor, dy: 0.3 * scaleFactor }
         ],
-        goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
+        goal: { x: 1100, y: canvas.height - 450 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
         coins: [
-            { x: 350, y: canvas.height - 300, width: 20, height: 20, collected: false },
-            { x: 750, y: canvas.height - 350, width: 20, height: 20, collected: false }
+            { x: 350, y: canvas.height - 300 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false },
+            { x: 750, y: canvas.height - 350 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
         ],
         boss: null,
         speedBoosts: [
-            { x: 450, y: canvas.height - 290, width: 30, height: 30, collected: false }
+            { x: 450, y: canvas.height - 290 * scaleFactor, width: 30 * scaleFactor, height: 30 * scaleFactor, collected: false }
         ]
     },
     {
         platforms: [ // Level 4
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
-            { x: 200, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 400, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 600, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 800, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 1000, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 0, y: canvas.height - 115 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 200, y: canvas.height - 200 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 400, y: canvas.height - 250 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 600, y: canvas.height - 300 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 800, y: canvas.height - 350 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 1000, y: canvas.height - 400 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
         ],
         enemies: [
-            { x: 530, y: canvas.height - 270, width: 25, height: 25, originalY: canvas.height - 270, dy: 0.4 },
-            { x: 930, y: canvas.height - 370, width: 50, height: 50, originalY: canvas.height - 370, dy: 0.3 }
+            { x: 530, y: canvas.height - 270 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 270 * scaleFactor, dy: 0.4 * scaleFactor },
+            { x: 930, y: canvas.height - 370 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor, originalY: canvas.height - 370 * scaleFactor, dy: 0.3 * scaleFactor }
         ],
-        goal: { x: 1200, y: canvas.height - 450, width: 50, height: 50 },
+        goal: { x: 1200, y: canvas.height - 450 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
         coins: [
-            { x: 300, y: canvas.height - 220, width: 20, height: 20, collected: false },
-            { x: 700, y: canvas.height - 320, width: 20, height: 20, collected: false }
+            { x: 300, y: canvas.height - 220 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false },
+            { x: 700, y: canvas.height - 320 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
         ],
         boss: null,
         speedBoosts: [
-            { x: 350, y: canvas.height - 240, width: 30, height: 30, collected: false }
+            { x: 350, y: canvas.height - 240 * scaleFactor, width: 30 * scaleFactor, height: 30 * scaleFactor, collected: false }
         ]
     },
     {
         platforms: [ // Level 5 
-            { x: 0, y: canvas.height - 115, width: 2000, height: 20, visible: false },
-            { x: 100, y: canvas.height - 200, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 300, y: canvas.height - 250, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 500, y: canvas.height - 300, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 700, y: canvas.height - 350, width: 100, height: 30, visible: true, image: platformImage },
-            { x: 900, y: canvas.height - 400, width: 100, height: 30, visible: true, image: platformImage },
+            { x: 0, y: canvas.height - 115 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 100, y: canvas.height - 200 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 300, y: canvas.height - 250 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 300 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 350 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 400 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
         ],
         enemies: [
-            { x: 630, y: canvas.height - 320, width: 25, height: 25, originalY: canvas.height - 320, dy: 0.4 },
-            { x: 1030, y: canvas.height - 370, width: 25, height: 25, originalY: canvas.height - 370, dy: 0.3 }
+            { x: 630, y: canvas.height - 320 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 320 * scaleFactor, dy: 0.4 * scaleFactor },
+            { x: 1030, y: canvas.height - 370 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 370 * scaleFactor, dy: 0.3 * scaleFactor }
         ],
-        goal: { x: 1100, y: canvas.height - 450, width: 50, height: 50 },
+        goal: { x: 1100, y: canvas.height - 450 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
         coins: [
-            { x: 250, y: canvas.height - 290, width: 20, height: 20, collected: false },
-            { x: 650, y: canvas.height - 390, width: 20, height: 20, collected: false }
+            { x: 250, y: canvas.height - 290 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false },
+            { x: 650, y: canvas.height - 390 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
         ],
         boss: {
-            x: 915,
-            y: canvas.height - 450,
-            width: 50,
-            height: 50,
-            originalY: canvas.height - 450,
-            dy: 0,
-            health: 5
+            x: 915, y: canvas.height - 450 * scaleFactor,
+            width: 50 * scaleFactor, height: 50 * scaleFactor,
+            originalY: canvas.height - 450 * scaleFactor,
+            dy: 0, health: 5
         },
         speedBoosts: [
-            { x: 450, y: canvas.height - 240, width: 30, height: 30, collected: false }
+            { x: 450, y: canvas.height - 240 * scaleFactor, width: 30 * scaleFactor, height: 30 * scaleFactor, collected: false }
         ]
     }
 ];
@@ -400,13 +389,12 @@ function drawHero() {
 }
 
 function drawBackground() {
-    const backgroundWidth = backgroundImage.width;
-    const backgroundHeight = backgroundImage.height;
-    const startY = canvas.height - backgroundHeight;
+    const backgroundWidth = 800 * scaleFactor;
+    const backgroundHeight = 600 * scaleFactor;
     const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
 
     for (let i = 0; i <= repeatCount; i++) {
-        ctx.drawImage(backgroundImage, i * backgroundWidth - scrollOffset % backgroundWidth, startY, backgroundWidth, backgroundHeight);
+        ctx.drawImage(backgroundImage, i * backgroundWidth - scrollOffset % backgroundWidth, canvas.height - backgroundHeight, backgroundWidth, backgroundHeight);
     }
 }
 
@@ -554,7 +542,7 @@ function drawLives() {
 
 function drawCoinsCollected() {
     ctx.fillStyle = 'black';
-    ctx.font = '15px "Press Start 2P", cursive';;
+    ctx.font = '15px "Press Start 2P", cursive';
     ctx.fillText('Confidence: ' + hero.coinsCollected, 10, 60);
     ctx.fillText('Level: ' + (currentLevelIndex + 1), 10, 90);
 }
@@ -576,10 +564,10 @@ let animationActive = true; // Globale Variable, um den Animationsstatus zu verf
 function startEndAnimation() {
     if (!animationActive) return; // Animation überspringen, wenn sie deaktiviert ist
 
-    let hero2 = { x: -50, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero2Images, currentImage: hero2Images.walk1, reachedPosition: false };
-    let hero3 = { x: -100, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero3Images, currentImage: hero3Images.walk1, reachedPosition: false };
-    let hero4 = { x: canvas.width + 50, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero4Images, currentImage: hero4Images.walk1, reachedPosition: false };
-    let hero5 = { x: canvas.width + 100, y: canvas.height - 275, width: 37.5, height: 60, speed: 3, walkCounter: 0, images: hero5Images, currentImage: hero5Images.walk1, reachedPosition: false };
+    let hero2 = { x: -50, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero2Images, currentImage: hero2Images.walk1, reachedPosition: false };
+    let hero3 = { x: -100, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero3Images, currentImage: hero3Images.walk1, reachedPosition: false };
+    let hero4 = { x: canvas.width + 50, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero4Images, currentImage: hero4Images.walk1, reachedPosition: false };
+    let hero5 = { x: canvas.width + 100, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero5Images, currentImage: hero5Images.walk1, reachedPosition: false };
     let endAnimationStarted = false;
     let heroes = [hero2, hero3, hero4, hero5];
     let currentHeroIndex = 0;
@@ -663,7 +651,7 @@ function update() {
     hero.y += hero.dy;
 
     if (hero.y + hero.height < canvas.height) {
-        hero.dy += 1;
+        hero.dy += 1 * scaleFactor;
     } else {
         hero.dy = 0;
         hero.jumping = false;
@@ -684,7 +672,7 @@ function update() {
 
     currentLevel.enemies.forEach(enemy => {
         enemy.y += enemy.dy;
-        if (enemy.y > enemy.originalY + 10 || enemy.y < enemy.originalY - 10) {
+        if (enemy.y > enemy.originalY + 10 * scaleFactor || enemy.y < enemy.originalY - 10 * scaleFactor) {
             enemy.dy *= -1;
         }
 
@@ -733,14 +721,14 @@ function update() {
     if (currentLevel.boss && !currentLevel.bossDefeated) {
         let boss = currentLevel.boss;
         boss.y += boss.dy;
-        if (boss.y > boss.originalY + 10 || boss.y < boss.originalY - 10) {
+        if (boss.y > boss.originalY + 10 * scaleFactor || boss.y < boss.originalY - 10 * scaleFactor) {
             boss.dy *= -1;
         }
 
-        if (hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset - 50 &&
-            hero.x < boss.x + boss.width - scrollOffset + 50 &&
-            hero.y + hero.height > boss.y - 50 &&
-            hero.y < boss.y + boss.height + 50) {
+        if (hero.isAttacking && hero.x + hero.width > boss.x - scrollOffset - 50 * scaleFactor &&
+            hero.x < boss.x + boss.width - scrollOffset + 50 * scaleFactor &&
+            hero.y + hero.height > boss.y - 50 * scaleFactor &&
+            hero.y < boss.y + boss.height + 50 * scaleFactor) {
             boss.health--;
             if (boss.health <= 0) {
                 currentLevel.bossDefeated = true;
@@ -797,7 +785,7 @@ function update() {
 
 function resetHeroPosition() {
     hero.x = 50;
-    hero.y = canvas.height - 400;
+    hero.y = canvas.height - 400 * scaleFactor;
     hero.dx = 0;
     hero.dy = 0;
     hero.isAttacking = false;
@@ -839,7 +827,7 @@ function stopHero(e) {
 
 function jump() {
     if (!hero.jumping) {
-        hero.dy = -15;
+        hero.dy = -15 * scaleFactor;
         hero.jumping = true;
         hero.currentImage = heroImages.jump;
     }
@@ -932,7 +920,7 @@ const menus = {
         currentIndex: 0
     },
     levelSelection: {
-        buttons: document.queryAll('#levelSelection button'),
+        buttons: document.querySelectorAll('#levelSelection button'),
         currentIndex: 0
     }
 };
