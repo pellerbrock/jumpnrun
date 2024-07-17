@@ -172,8 +172,7 @@ let hero = {
     currentImage: heroImages.idle,
     walkCounter: 0,
     isAttacking: false,
-    speedBoosted: false,
-    invincible: false // Neue Eigenschaft für Unverwundbarkeit
+    speedBoosted: false
 };
 
 let scrollOffset = 0;
@@ -317,6 +316,8 @@ let heroSpeechBubbleVisible = false;
 let bossSpeechBubbleVisible = false;
 let heroSpeechBubbleTimer;
 let bossSpeechBubbleTimer;
+let message = '';
+let showMessage = false;
 
 document.getElementById('playButton').addEventListener('click', () => {
     document.getElementById('startScreen').style.display = 'none';
@@ -570,6 +571,7 @@ function clear() {
 }
 
 function update() {
+    if (showMessage) return; // Halt updates when showing message
     hero.x += hero.dx;
     hero.y += hero.dy;
 
@@ -603,23 +605,21 @@ function update() {
             enemy.dy *= -1;
         }
 
-        if (!hero.invincible &&
-            hero.x + hero.width > enemy.x - scrollOffset &&
+        if (hero.x + hero.width > enemy.x - scrollOffset &&
             hero.x < enemy.x + enemy.width - scrollOffset &&
             hero.y + hero.height > enemy.y &&
             hero.y < enemy.y + enemy.height) {
             hero.lives--;
-            hero.invincible = true; // Held wird unverwundbar
-            setTimeout(() => {
-                hero.invincible = false; // Unverwundbarkeit nach 2 Sekunden aufheben
-            }, 2000);
-
             if (hero.lives <= 0) {
-                setTimeout(resetToCharacterSelection, 1000);
                 displayMessage("You Died!");
+                setTimeout(() => {
+                    resetToCharacterSelection();
+                }, 1000);
             } else {
                 displayMessage("You Died!");
-                setTimeout(resetHeroPosition, 1000);
+                setTimeout(() => {
+                    resetHeroPosition();
+                }, 1000);
             }
         }
     });
@@ -673,17 +673,16 @@ function update() {
             hero.y + hero.height > boss.y &&
             hero.y < boss.y + boss.height) {
             hero.lives--;
-            hero.invincible = true; // Held wird unverwundbar
-            setTimeout(() => {
-                hero.invincible = false; // Unverwundbarkeit nach 2 Sekunden aufheben
-            }, 2000);
-
             if (hero.lives <= 0) {
                 displayMessage("Du bist gestorben!");
-                setTimeout(resetToCharacterSelection, 1000);
+                setTimeout(() => {
+                    resetToCharacterSelection();
+                }, 1000);
             } else {
                 displayMessage("Du bist gestorben!");
-                setTimeout(resetHeroPosition, 1000);
+                setTimeout(() => {
+                    resetHeroPosition();
+                }, 1000);
             }
         }
     }
@@ -729,7 +728,6 @@ function resetHeroPosition() {
     hero.dx = 0;
     hero.dy = 0;
     hero.isAttacking = false;
-    hero.invincible = false; // Unverwundbarkeit aufheben
     scrollOffset = 0;
 }
 
@@ -785,10 +783,13 @@ function attack() {
     }
 }
 
-function displayMessage(message) {
-    ctx.fillStyle = 'black';
-    ctx.font = '24px Arial';
-    ctx.fillText(message, canvas.width / 2 - 50, canvas.height / 2);
+function displayMessage(msg) {
+    message = msg;
+    showMessage = true;
+    setTimeout(() => {
+        showMessage = false;
+        message = '';
+    }, 1000); // Display message for 1 second
 }
 
 function nextLevel() {
@@ -827,7 +828,13 @@ function gameLoop() {
     if (heroSpeechBubbleVisible) {
         drawHeroSpeechBubble();
     }
-    update();
+    if (showMessage) {
+        ctx.fillStyle = 'black';
+        ctx.font = '24px Arial';
+        ctx.fillText(message, canvas.width / 2 - 50, canvas.height / 2);
+    } else {
+        update();
+    }
 
     if (goalReached) {
         displayMessage("You Win!");
