@@ -182,10 +182,10 @@ const levels = [
     {
         background: backgroundImage,
         platforms: [ // Level 1
-            { x: 0, y: canvas.height - 85 * scaleFactor, width: 1800 * scaleFactor, height: 10 * scaleFactor, visible: false },
-            { x: 700, y: canvas.height - 210 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 900, y: canvas.height - 190 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 1100, y: canvas.height - 220 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
+            { x: 0, y: canvas.height - 85 * scaleFactor, width: 4800 * scaleFactor, height: 10 * scaleFactor, visible: false },
+            { x: 700, y: canvas.height - 210 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 900, y: canvas.height - 190 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 1100, y: canvas.height - 220 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
         ],
         enemies: [
             { x: 1000, y: canvas.height - 200 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 200 * scaleFactor, dy: 0.5 * scaleFactor }
@@ -204,15 +204,15 @@ const levels = [
     {
         background: backgroundImage,
         platforms: [ // Level 2
-            { x: 0, y: canvas.height - 85 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
-            { x: 150, y: canvas.height - 200 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 350, y: canvas.height - 160 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 350, y: canvas.height - 360 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 500, y: canvas.height - 240 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 580, y: canvas.height - 440 * scaleFactor, width: 90 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 700, y: canvas.height - 310 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 850, y: canvas.height - 290 * scaleFactor, width: 60 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 730, y: canvas.height - 440 * scaleFactor, width: 180 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
+            { x: 0, y: canvas.height - 85 * scaleFactor, width: 4000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 150, y: canvas.height - 200 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 160 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 350, y: canvas.height - 360 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 500, y: canvas.height - 240 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 580, y: canvas.height - 440 * scaleFactor, width: 110 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 700, y: canvas.height - 310 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 850, y: canvas.height - 290 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 730, y: canvas.height - 440 * scaleFactor, width: 200 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
         ],
         enemies: [
             { x: 270, y: canvas.height - 200 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 200 * scaleFactor, dy: 0.5 * scaleFactor },
@@ -232,7 +232,7 @@ const levels = [
     {
         background: backgroundImage,
         platforms: [ // Level 3
-            { x: 0, y: canvas.height - 85 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 0, y: canvas.height - 85 * scaleFactor, width: 4000 * scaleFactor, height: 20 * scaleFactor, visible: false },
             { x: 290, y: canvas.height - 190 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 490, y: canvas.height - 250 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 690, y: canvas.height - 300 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
@@ -255,7 +255,7 @@ const levels = [
     {
         background: backgroundImage2,
         platforms: [ // Level 4
-            { x: 0, y: canvas.height - 155 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 0, y: canvas.height - 155 * scaleFactor, width: 4000 * scaleFactor, height: 20 * scaleFactor, visible: false },
             { x: 200, y: canvas.height - 250 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage2 },
             { x: 400, y: canvas.height - 300 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage2 },
             { x: 600, y: canvas.height - 350 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage2 },
@@ -279,7 +279,7 @@ const levels = [
     {
         background: backgroundImage2,
         platforms: [ // Level 5 
-            { x: 0, y: canvas.height - 155 * scaleFactor, width: 2000 * scaleFactor, height: 20 * scaleFactor, visible: false },
+            { x: 0, y: canvas.height - 155 * scaleFactor, width: 4000 * scaleFactor, height: 20 * scaleFactor, visible: false },
             { x: 100, y: canvas.height - 250 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage2 },
             { x: 300, y: canvas.height - 300 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage2 },
             { x: 500, y: canvas.height - 350 * scaleFactor, width: 100 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage2 },
