@@ -454,7 +454,6 @@ function drawBoss() {
                 heroSpeechBubbleVisible = true;
                 heroSpeechBubbleTimer = setTimeout(() => {
                     heroSpeechBubbleVisible = false;
-                    startEndAnimation();
                 }, 3000); // Display hero's speech bubble for 3 seconds
             }, 3000); // Wait 3 seconds before showing hero's thought bubble
         }
@@ -569,93 +568,6 @@ function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-let animationActive = true; // Globale Variable, um den Animationsstatus zu verfolgen
-
-function startEndAnimation() {
-    if (!animationActive) return; // Animation überspringen, wenn sie deaktiviert ist
-
-    let hero2 = { x: -50, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero2Images, currentImage: hero2Images.walk1, reachedPosition: false };
-    let hero3 = { x: -100, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero3Images, currentImage: hero3Images.walk1, reachedPosition: false };
-    let hero4 = { x: canvas.width + 50, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero4Images, currentImage: hero4Images.walk1, reachedPosition: false };
-    let hero5 = { x: canvas.width + 100, y: canvas.height - 275 * scaleFactor, width: 37.5 * scaleFactor, height: 60 * scaleFactor, speed: 3, walkCounter: 0, images: hero5Images, currentImage: hero5Images.walk1, reachedPosition: false };
-    let endAnimationStarted = false;
-    let heroes = [hero2, hero3, hero4, hero5];
-    let currentHeroIndex = 0;
-
-    function drawWalkingHero(hero) {
-        hero.walkCounter++;
-        if (hero.walkCounter % 30 < 15) {
-            hero.currentImage = hero.images.walk1;
-        } else {
-            hero.currentImage = hero.images.walk2;
-        }
-        ctx.drawImage(hero.currentImage, hero.x, hero.y, hero.width, hero.height);
-    }
-
-    function drawIdleHero(hero) {
-        hero.currentImage = hero.images.idle;
-        ctx.drawImage(hero.currentImage, hero.x, hero.y, hero.width, hero.height);
-    }
-
-    function animateHeroes() {
-        if (!animationActive) return; // Animation überspringen, wenn sie deaktiviert ist
-
-        clear();
-        drawBackground();
-        drawPlatforms();
-        drawHero();
-        drawBoss();
-        drawEnemies();
-        drawCoins();
-        drawGoal();
-        drawLives();
-        drawCoinsCollected();
-        drawSpeedBoosts();
-
-        if (endAnimationStarted) {
-            heroes.forEach((hero, index) => {
-                if (index <= currentHeroIndex && !hero.reachedPosition) {
-                    if (index <= 1 && hero.x < canvas.width / 2 - (2 - index) * 40) {
-                        hero.x += hero.speed;
-                        drawWalkingHero(hero);
-                    } else if (index > 1 && hero.x > canvas.width / 2 + (index - 1) * 40) {
-                        hero.x -= hero.speed;
-                        drawWalkingHero(hero);
-                    } else {
-                        hero.reachedPosition = true;
-                        drawIdleHero(hero);
-                        if (index < heroes.length - 1) {
-                            currentHeroIndex++;
-                        }
-                    }
-                } else if (hero.reachedPosition) {
-                    drawIdleHero(hero);
-                }
-            });
-        }
-
-        requestAnimationFrame(animateHeroes);
-    }
-
-    endAnimationStarted = true;
-    animateHeroes();
-}
-
-// Funktion zum Aktivieren/Deaktivieren der Animation
-function toggleAnimation() {
-    animationActive = !animationActive;
-    if (animationActive) {
-        startEndAnimation();
-    }
-}
-
-// Beispiel: Animation durch Tastendruck ein-/ausschalten
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'a') { // 'a' Taste zum Ein-/Ausschalten der Animation
-        toggleAnimation();
-    }
-});
-
 function update() {
     hero.x += hero.dx;
     hero.y += hero.dy;
@@ -667,6 +579,10 @@ function update() {
         hero.jumping = false;
         hero.currentImage = heroImages.idle;
         hero.y = canvas.height - hero.height;
+    }
+
+    if (hero.x < 0) {
+        hero.x = 0;
     }
 
     currentLevel.platforms.forEach(platform => {
