@@ -695,12 +695,14 @@ function update() {
         hero.currentImage = heroImages.idle;
     }
 
-    if (hero.x > canvas.width / 2 && hero.dx > 0) {
+    const heroOffset = 0.2 * canvas.width;  // 40% from the left
+
+    if (hero.x > heroOffset && hero.dx > 0) {
         scrollOffset += hero.dx;
-        hero.x = canvas.width / 2;
+        hero.x = heroOffset;
     } else if (scrollOffset > 0 && hero.dx < 0) {
         scrollOffset += hero.dx;
-        hero.x = canvas.width / 2;
+        hero.x = heroOffset;
     }
 
     if (scrollOffset < 0) {
