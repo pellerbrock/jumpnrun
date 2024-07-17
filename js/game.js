@@ -172,7 +172,8 @@ let hero = {
     currentImage: heroImages.idle,
     walkCounter: 0,
     isAttacking: false,
-    speedBoosted: false
+    speedBoosted: false,
+    invincible: false // Neue Eigenschaft für Unverwundbarkeit
 };
 
 let scrollOffset = 0;
@@ -602,11 +603,17 @@ function update() {
             enemy.dy *= -1;
         }
 
-        if (hero.x + hero.width > enemy.x - scrollOffset &&
+        if (!hero.invincible &&
+            hero.x + hero.width > enemy.x - scrollOffset &&
             hero.x < enemy.x + enemy.width - scrollOffset &&
             hero.y + hero.height > enemy.y &&
             hero.y < enemy.y + enemy.height) {
             hero.lives--;
+            hero.invincible = true; // Held wird unverwundbar
+            setTimeout(() => {
+                hero.invincible = false; // Unverwundbarkeit nach 2 Sekunden aufheben
+            }, 2000);
+
             if (hero.lives <= 0) {
                 setTimeout(resetToCharacterSelection, 1000);
                 displayMessage("You Died!");
@@ -666,6 +673,11 @@ function update() {
             hero.y + hero.height > boss.y &&
             hero.y < boss.y + boss.height) {
             hero.lives--;
+            hero.invincible = true; // Held wird unverwundbar
+            setTimeout(() => {
+                hero.invincible = false; // Unverwundbarkeit nach 2 Sekunden aufheben
+            }, 2000);
+
             if (hero.lives <= 0) {
                 displayMessage("Du bist gestorben!");
                 setTimeout(resetToCharacterSelection, 1000);
@@ -717,6 +729,7 @@ function resetHeroPosition() {
     hero.dx = 0;
     hero.dy = 0;
     hero.isAttacking = false;
+    hero.invincible = false; // Unverwundbarkeit aufheben
     scrollOffset = 0;
 }
 
