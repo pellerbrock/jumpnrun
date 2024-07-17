@@ -68,7 +68,8 @@ moveLeftButton.addEventListener('touchend', (e) => {
 
 moveRightButton.addEventListener('touchend', (e) => {
     e.preventDefault();
-    hero.dx = 0});
+    hero.dx = 0;
+});
 
 let heroImages = {
     idle: new Image(),
@@ -81,25 +82,33 @@ let heroImages = {
 let hero2Images = {
     idle: new Image(),
     walk1: new Image(),
-    walk2: new Image()
+    walk2: new Image(),
+    jump: new Image(),
+    attack: new Image()
 };
 
 let hero3Images = {
     idle: new Image(),
     walk1: new Image(),
-    walk2: new Image()
+    walk2: new Image(),
+    jump: new Image(),
+    attack: new Image()
 };
 
 let hero4Images = {
     idle: new Image(),
     walk1: new Image(),
-    walk2: new Image()
+    walk2: new Image(),
+    jump: new Image(),
+    attack: new Image()
 };
 
 let hero5Images = {
     idle: new Image(),
     walk1: new Image(),
-    walk2: new Image()
+    walk2: new Image(),
+    jump: new Image(),
+    attack: new Image()
 };
 
 let backgroundImage = new Image();
@@ -119,15 +128,26 @@ speedBoostImage.src = 'assets/speedboost.png';
 hero2Images.idle.src = 'assets/hero2_idle.png';
 hero2Images.walk1.src = 'assets/hero2_walk1.png';
 hero2Images.walk2.src = 'assets/hero2_walk2.png';
+hero2Images.jump.src = 'assets/hero2_jump.png';
+hero2Images.attack.src = 'assets/hero2_attack.png';
+
 hero3Images.idle.src = 'assets/hero3_idle.png';
 hero3Images.walk1.src = 'assets/hero3_walk1.png';
 hero3Images.walk2.src = 'assets/hero3_walk2.png';
+hero3Images.jump.src = 'assets/hero3_jump.png';
+hero3Images.attack.src = 'assets/hero3_attack.png';
+
 hero4Images.idle.src = 'assets/hero4_idle.png';
 hero4Images.walk1.src = 'assets/hero4_walk1.png';
 hero4Images.walk2.src = 'assets/hero4_walk2.png';
+hero4Images.jump.src = 'assets/hero4_jump.png';
+hero4Images.attack.src = 'assets/hero4_attack.png';
+
 hero5Images.idle.src = 'assets/hero5_idle.png';
 hero5Images.walk1.src = 'assets/hero5_walk1.png';
 hero5Images.walk2.src = 'assets/hero5_walk2.png';
+hero5Images.jump.src = 'assets/hero5_jump.png';
+hero5Images.attack.src = 'assets/hero5_attack.png';
 
 // Portal Animation Setup
 const portalFrames = [];
@@ -180,11 +200,8 @@ const levels = [
             { x: 850, y: canvas.height - 350, width: 20, height: 20, collected: false },
             { x: 1050, y: canvas.height - 330, width: 20, height: 20, collected: false }
         ],
-       
         boss: null,
-        speedBoosts: [
-           
-        ]
+        speedBoosts: []
     },
     {
         platforms: [ // Level 2
@@ -288,8 +305,7 @@ const levels = [
         speedBoosts: [
             { x: 450, y: canvas.height - 240, width: 30, height: 30, collected: false }
         ]
-    },
-
+    }
 ];
 
 let currentLevelIndex = 0;
@@ -384,10 +400,10 @@ function drawHero() {
 }
 
 function drawBackground() {
-    const backgroundWidth = 800;
-    const backgroundHeight = 800;
-    const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
+    const backgroundWidth = backgroundImage.width;
+    const backgroundHeight = backgroundImage.height;
     const startY = canvas.height - backgroundHeight;
+    const repeatCount = Math.ceil((scrollOffset + canvas.width) / backgroundWidth);
 
     for (let i = 0; i <= repeatCount; i++) {
         ctx.drawImage(backgroundImage, i * backgroundWidth - scrollOffset % backgroundWidth, startY, backgroundWidth, backgroundHeight);
@@ -538,7 +554,7 @@ function drawLives() {
 
 function drawCoinsCollected() {
     ctx.fillStyle = 'black';
-    ctx.font = '15px "Press Start 2P", cursive';
+    ctx.font = '15px "Press Start 2P", cursive';;
     ctx.fillText('Confidence: ' + hero.coinsCollected, 10, 60);
     ctx.fillText('Level: ' + (currentLevelIndex + 1), 10, 90);
 }
@@ -916,7 +932,7 @@ const menus = {
         currentIndex: 0
     },
     levelSelection: {
-        buttons: document.querySelectorAll('#levelSelection button'),
+        buttons: document.queryAll('#levelSelection button'),
         currentIndex: 0
     }
 };
