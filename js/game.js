@@ -239,8 +239,8 @@ const levels = [
             { x: 890, y: canvas.height - 370 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
         ],
         enemies: [
-            { x: 400, y: canvas.height - 270 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 270 * scaleFactor, dy: 0.4 * scaleFactor },
-            { x: 800, y: canvas.height - 370 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor, originalY: canvas.height - 370 * scaleFactor, dy: 0.3 * scaleFactor }
+            { x: 400, y: canvas.height - 260 * scaleFactor, width: 25 * scaleFactor, height: 25 * scaleFactor, originalY: canvas.height - 670 * scaleFactor, dy: 0.4 * scaleFactor },
+            { x: 800, y: canvas.height - 360 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor, originalY: canvas.height - 360 * scaleFactor, dy: 0.3 * scaleFactor }
         ],
         goal: { x: 1100, y: canvas.height - 450 * scaleFactor, width: 50 * scaleFactor, height: 50 * scaleFactor },
         coins: [
