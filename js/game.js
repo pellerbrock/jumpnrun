@@ -24,7 +24,7 @@ let scaleFactor = 1;
 
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.6;
+    canvas.height = window.innerHeight * 0.8;
     scaleFactor = canvas.height / 600;  // Adjust the scale factor based on the height of the canvas
 }
 
