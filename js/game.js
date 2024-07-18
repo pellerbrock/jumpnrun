@@ -21,6 +21,7 @@ const attackButton = document.getElementById('attackButton');
 
 let isMobile = false;
 let scaleFactor = 1;
+let musicEnabled = true; // Variable to track music state
 
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
@@ -386,7 +387,7 @@ mobileStartButton.addEventListener('click', () => {
     gameStarted = true;
     mobileStartButton.style.display = 'none';
     mobileControls.style.display = 'flex';
-    backgroundMusic.play();
+    if (musicEnabled) backgroundMusic.play(); // Check if music is enabled before playing
     gameLoop();
 });
 
@@ -581,7 +582,7 @@ function clear() {
 }
 
 function update() {
-    if (showMessage) return; // Halt updates when showing message
+    if (showMessage || heroSpeechBubbleVisible || bossSpeechBubbleVisible) return; // Halt updates when showing message or speech bubbles
     hero.x += hero.dx;
     hero.y += hero.dy;
 
@@ -932,7 +933,8 @@ updateFocusedButton(menus.startScreen);
 resizeCanvas();
 
 document.getElementById('toggleSound').addEventListener('change', (e) => {
-    if (e.target.checked) {
+    musicEnabled = e.target.checked; // Update musicEnabled variable
+    if (musicEnabled) {
         backgroundMusic.play();
     } else {
         backgroundMusic.pause();
