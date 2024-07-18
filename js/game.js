@@ -233,7 +233,7 @@ const levels = [
         background: backgroundImage,
         platforms: [ // Level 3
             { x: 0, y: canvas.height - 85 * scaleFactor, width: 4000 * scaleFactor, height: 20 * scaleFactor, visible: false },
-            { x: 290, y: canvas.height - 190 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 285, y: canvas.height - 205 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 490, y: canvas.height - 250 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 690, y: canvas.height - 300 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 890, y: canvas.height - 370 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
