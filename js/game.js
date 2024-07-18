@@ -588,6 +588,11 @@ function update() {
         hero.x = 0;
     }
 
+    // Unsichtbare Wand hinter dem Ziel hinzufügen
+    if (hero.x + hero.width > currentLevel.goal.x + 500 - scrollOffset) {
+        hero.x = currentLevel.goal.x + 500 - hero.width - scrollOffset;
+    }
+
     currentLevel.platforms.forEach(platform => {
         if (hero.y + hero.height > platform.y &&
             hero.y + hero.height - hero.dy <= platform.y &&
@@ -764,14 +769,6 @@ function stopHero(e) {
     }
 }
 
-function jump() {
-    if (!hero.jumping) {
-        hero.dy = -15 * scaleFactor;
-        hero.jumping = true;
-        hero.currentImage = heroImages.jump;
-    }
-}
-
 function attack() {
     if (!hero.isAttacking) {
         hero.isAttacking = true;
@@ -780,6 +777,14 @@ function attack() {
             hero.isAttacking = false;
             hero.currentImage = heroImages.idle;
         }, 500);
+    }
+}
+
+function jump() {
+    if (!hero.jumping) {
+        hero.dy = -15 * scaleFactor;
+        hero.jumping = true;
+        hero.currentImage = heroImages.jump;
     }
 }
 
@@ -868,7 +873,7 @@ const menus = {
         currentIndex: 0
     },
     levelSelection: {
-        buttons: document.querySelectorAll('#levelSelection button'),
+        buttons: document.queryAll('#levelSelection button'),
         currentIndex: 0
     }
 };
