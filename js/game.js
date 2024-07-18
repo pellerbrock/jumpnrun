@@ -21,7 +21,7 @@ const attackButton = document.getElementById('attackButton');
 
 let isMobile = false;
 let scaleFactor = 1;
-let musicEnabled = true; // Variable to track music state
+let musicEnabled = true; // Variable to store music state
 
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
@@ -71,7 +71,8 @@ moveLeftButton.addEventListener('touchend', (e) => {
 
 moveRightButton.addEventListener('touchend', (e) => {
     e.preventDefault();
-    hero.dx = 0});
+    hero.dx = 0
+});
 
 let heroImages = {
     idle: new Image(),
@@ -387,7 +388,9 @@ mobileStartButton.addEventListener('click', () => {
     gameStarted = true;
     mobileStartButton.style.display = 'none';
     mobileControls.style.display = 'flex';
-    if (musicEnabled) backgroundMusic.play(); // Check if music is enabled before playing
+    if (musicEnabled) {
+        backgroundMusic.play();
+    }
     gameLoop();
 });
 
@@ -933,7 +936,7 @@ updateFocusedButton(menus.startScreen);
 resizeCanvas();
 
 document.getElementById('toggleSound').addEventListener('change', (e) => {
-    musicEnabled = e.target.checked; // Update musicEnabled variable
+    musicEnabled = e.target.checked;
     if (musicEnabled) {
         backgroundMusic.play();
     } else {
