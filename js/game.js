@@ -329,12 +329,22 @@ document.getElementById('controlsButton').addEventListener('click', () => {
     document.getElementById('controlsScreen').style.display = 'flex';
 });
 
+document.getElementById('settingsButton').addEventListener('click', () => {
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('settingsScreen').style.display = 'flex';
+});
+
 document.getElementById('quitButton').addEventListener('click', () => {
     window.close();
 });
 
 document.getElementById('backButton').addEventListener('click', () => {
     document.getElementById('controlsScreen').style.display = 'none';
+    document.getElementById('startScreen').style.display = 'flex';
+});
+
+document.getElementById('backButtonSettings').addEventListener('click', () => {
+    document.getElementById('settingsScreen').style.display = 'none';
     document.getElementById('startScreen').style.display = 'flex';
 });
 
@@ -873,7 +883,11 @@ const menus = {
         currentIndex: 0
     },
     levelSelection: {
-        buttons: document.queryAll('#levelSelection button'),
+        buttons: document.querySelectorAll('#levelSelection button'),
+        currentIndex: 0
+    },
+    settingsScreen: {
+        buttons: document.querySelectorAll('#settingsScreen button'),
         currentIndex: 0
     }
 };
@@ -908,9 +922,19 @@ document.addEventListener('keydown', (e) => {
         navigateMenu(e, menus.characterSelection);
     } else if (document.getElementById('levelSelection').style.display === 'flex') {
         navigateMenu(e, menus.levelSelection);
+    } else if (document.getElementById('settingsScreen').style.display === 'flex') {
+        navigateMenu(e, menus.settingsScreen);
     }
 });
 
 updateFocusedButton(menus.startScreen);
 
 resizeCanvas();
+
+document.getElementById('toggleSound').addEventListener('change', (e) => {
+    if (e.target.checked) {
+        backgroundMusic.play();
+    } else {
+        backgroundMusic.pause();
+    }
+});

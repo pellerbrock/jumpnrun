@@ -71,8 +71,8 @@ canvas {
 }
 
 .character-selection img {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     margin: 10px;
     cursor: pointer;
 }
@@ -146,4 +146,38 @@ canvas {
 
 #mobileStartButton:hover {
     background-color: #FFA500;
+}
+
+
+/* Add this to your existing CSS */
+.settings-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.settings-screen h2 {
+    font-size: 2em;
+    color: #ffd700;
+    margin-bottom: 20px;
+}
+
+.settings-screen label, .settings-screen button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1em;
+    color: #000;
+    background-color: #FFC107;
+    border: 2px solid #000;
+    margin: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.settings-screen button:hover, .settings-screen button:focus {
+    background-color: #000;
+    color: #FFC107;
+    border: 2px solid #FFC107;
 }
