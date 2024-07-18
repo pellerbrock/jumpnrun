@@ -209,7 +209,7 @@ const levels = [
             { x: 350, y: canvas.height - 160 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 350, y: canvas.height - 360 * scaleFactor, width: 120 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 500, y: canvas.height - 240 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
-            { x: 580, y: canvas.height - 440 * scaleFactor, width: 110 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
+            { x: 580, y: canvas.height - 420 * scaleFactor, width: 110 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 700, y: canvas.height - 310 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 850, y: canvas.height - 290 * scaleFactor, width: 80 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage },
             { x: 730, y: canvas.height - 440 * scaleFactor, width: 200 * scaleFactor, height: 30 * scaleFactor, visible: true, image: platformImage }
