@@ -547,13 +547,13 @@ function drawPortal() {
 
 function drawLives() {
     ctx.fillStyle = 'black';
-    ctx.font = '15px "Press Start 2P", cursive';
+    ctx.font = '10px "Press Start 2P", cursive';
     ctx.fillText('Lives: ' + hero.lives, 10, 30);
 }
 
 function drawCoinsCollected() {
     ctx.fillStyle = 'black';
-    ctx.font = '15px "Press Start 2P", cursive';
+    ctx.font = '10px "Press Start 2P", cursive';
     ctx.fillText('Confidence: ' + hero.coinsCollected, 10, 60);
     ctx.fillText('Level: ' + (currentLevelIndex + 1), 10, 90);
 }
