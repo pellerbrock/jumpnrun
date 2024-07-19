@@ -153,7 +153,7 @@ let currentPortalFrame = 0;
 // Portalbilder laden
 for (let i = 1; i <= portalFrameCount; i++) {
     let img = new Image();
-    img.src = assets/portal${i}.png;
+    img.src = `assets/portal${i}.png`; // Use backticks for template literals
     portalFrames.push(img);
 }
 
@@ -353,11 +353,11 @@ document.getElementById('backButtonSettings').addEventListener('click', () => {
 document.getElementById('characterSelection').addEventListener('click', (e) => {
     if (e.target.tagName === 'IMG') {
         let selectedCharacter = e.target.getAttribute('data-character');
-        heroImages.idle.src = assets/${selectedCharacter}_idle.png;
-        heroImages.walk1.src = assets/${selectedCharacter}_walk1.png;
-        heroImages.walk2.src = assets/${selectedCharacter}_walk2.png;
-        heroImages.jump.src = assets/${selectedCharacter}_jump.png;
-        heroImages.attack.src = assets/${selectedCharacter}_attack.png;
+        heroImages.idle.src = `assets/${selectedCharacter}_idle.png`; // Use backticks for template literals
+        heroImages.walk1.src = `assets/${selectedCharacter}_walk1.png`;
+        heroImages.walk2.src = `assets/${selectedCharacter}_walk2.png`;
+        heroImages.jump.src = `assets/${selectedCharacter}_jump.png`;
+        heroImages.attack.src = `assets/${selectedCharacter}_attack.png`;
         heroImages.idle.onload = () => {
             console.log("Hero images loaded successfully.");
             document.getElementById('characterSelection').style.display = 'none';
