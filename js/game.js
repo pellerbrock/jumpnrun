@@ -71,7 +71,7 @@ moveLeftButton.addEventListener('touchend', (e) => {
 
 moveRightButton.addEventListener('touchend', (e) => {
     e.preventDefault();
-    hero.dx = 0;
+    hero.dx = 0
 });
 
 let heroImages = {
@@ -153,7 +153,7 @@ let currentPortalFrame = 0;
 // Portalbilder laden
 for (let i = 1; i <= portalFrameCount; i++) {
     let img = new Image();
-    img.src = `assets/portal${i}.png`;
+    img.src = assets/portal${i}.png;
     portalFrames.push(img);
 }
 
@@ -162,7 +162,7 @@ let lastPortalFrameChange = 0;
 
 let hero = {
     x: 50,
-    y: canvas.height - 150 * scaleFactor,
+    y: canvas.height - 275 * scaleFactor,
     width: 37.5 * scaleFactor,
     height: 60 * scaleFactor,
     speed: 5,
@@ -198,16 +198,7 @@ const levels = [
             { x: 950, y: canvas.height - 310 * scaleFactor, width: 20 * scaleFactor, height: 20 * scaleFactor, collected: false }
         ],
        
-        boss: {
-            x: 825,
-            y: canvas.height - 140 * scaleFactor,
-            width: 50,
-            height: 50,
-            originalY: canvas.height - 570,
-            dy: 0,
-            health: 5,
-            intro: true
-        },
+        boss: null,
         speedBoosts: [
            
         ]
@@ -362,24 +353,17 @@ document.getElementById('backButtonSettings').addEventListener('click', () => {
 document.getElementById('characterSelection').addEventListener('click', (e) => {
     if (e.target.tagName === 'IMG') {
         let selectedCharacter = e.target.getAttribute('data-character');
-        heroImages.idle.src = `assets/${selectedCharacter}_idle.png`;
-        heroImages.walk1.src = `assets/${selectedCharacter}_walk1.png`;
-        heroImages.walk2.src = `assets/${selectedCharacter}_walk2.png`;
-        heroImages.jump.src = `assets/${selectedCharacter}_jump.png`;
-        heroImages.attack.src = `assets/${selectedCharacter}_attack.png`;
+        heroImages.idle.src = assets/${selectedCharacter}_idle.png;
+        heroImages.walk1.src = assets/${selectedCharacter}_walk1.png;
+        heroImages.walk2.src = assets/${selectedCharacter}_walk2.png;
+        heroImages.jump.src = assets/${selectedCharacter}_jump.png;
+        heroImages.attack.src = assets/${selectedCharacter}_attack.png;
         heroImages.idle.onload = () => {
             console.log("Hero images loaded successfully.");
             document.getElementById('characterSelection').style.display = 'none';
             canvas.style.display = 'block';
             backToMenuButton.style.display = 'block';
             mobileStartButton.style.display = isMobile ? 'block' : 'none';
-            if (currentLevelIndex === 0 && currentLevel.boss && currentLevel.boss.intro) {
-                animateBossIntro(() => {
-                    displayHeroSpeechBubble("Swallow your problems\nand comfort him...", 2000, gameLoop);
-                });
-            } else {
-                gameLoop();
-            }
         };
         heroImages.idle.onerror = () => {
             console.error("Error loading hero images.");
@@ -783,9 +767,9 @@ function resetToCharacterSelection() {
 
 function moveHero(e) {
     if (!isMobile) {
-        if (e.key === 'ArrowRight' || e.key === 'd') {
+        if (e.key === 'ArrowRight') {
             hero.dx = hero.speed;
-        } else if (e.key === 'ArrowLeft' || e.key === 'a') {
+        } else if (e.key === 'ArrowLeft') {
             hero.dx = -hero.speed;
         }
     }
@@ -793,7 +777,7 @@ function moveHero(e) {
 
 function stopHero(e) {
     if (!isMobile) {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'd' || e.key === 'a') {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
             hero.dx = 0;
         }
     }
@@ -895,7 +879,7 @@ const menus = {
         currentIndex: 0
     },
     controlsScreen: {
-        buttons: document.queryAllSelector('#controlsScreen button'),
+        buttons: document.querySelectorAll('#controlsScreen button'),
         currentIndex: 0
     },
     characterSelection: {
@@ -959,135 +943,3 @@ document.getElementById('toggleSound').addEventListener('change', (e) => {
         backgroundMusic.pause();
     }
 });
-
-// Intro function for Boss
-function animateBossIntro(callback) {
-    const boss = currentLevel.boss;
-    boss.x = canvas.width;
-    const targetX = canvas.width - 70;
-    let bossState = 'entering';
-
-    function drawSpeechBubble(ctx, x, y, width, height, radius, text) {
-        let r = radius;
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + width, y, x + width, y + height, r);
-        ctx.arcTo(x + width, y + height, x, y + height, r);
-        ctx.arcTo(x, y + height, x, y, r);
-        ctx.arcTo(x, y, x + width, y, r);
-        ctx.closePath();
-        ctx.fillStyle = 'white';
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = 'black';
-        ctx.font = '16px Arial';
-
-        const lines = text.split('\n');
-        const lineHeight = 20;
-        lines.forEach((line, index) => {
-            ctx.fillText(line, x + 10, y + 22.5 + (index * lineHeight));
-        });
-
-        // Draw the tail of the speech bubble
-        ctx.beginPath();
-        ctx.moveTo(x + width / 2 - 0.5, y + height);
-        ctx.lineTo(x + width / 2 + 55, y + height);
-        ctx.lineTo(x + width / 1.2, y + height + 10);
-        ctx.closePath();
-        ctx.fill();
-    }
-
-    function animate() {
-        clear();
-        drawBackground();
-        drawPlatforms();
-        drawHero();
-        drawBoss();
-        drawEnemies();
-        drawCoins();
-        drawGoal();
-        drawLives();
-        drawCoinsCollected();
-        drawSpeedBoosts();
-
-        if (bossState === 'entering') {
-            boss.x -= 2;
-            if (boss.x <= targetX) {
-                bossState = 'standing';
-                setTimeout(() => {
-                    bossState = 'exiting';
-                }, 2000);
-            }
-        } else if (bossState === 'standing') {
-            drawSpeechBubble(ctx, boss.x - scrollOffset - 175, boss.y - 80, 235, 55, 10, "Im so sad and stressed,\nnobody is like me bla bla bla…");
-        } else if (bossState === 'exiting') {
-            boss.x += 2;
-            if (boss.x > canvas.width) {
-                bossState = 'done';
-            }
-        } else if (bossState === 'done') {
-            currentLevel.boss = null;
-            callback();
-            return;
-        }
-
-        requestAnimationFrame(animate);
-    }
-
-    animate();
-}
-
-function displayHeroSpeechBubble(text, duration, callback) {
-    function drawSpeechBubble(ctx, x, y, width, height, radius, text) {
-        let r = radius;
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + width, y, x + width, y + height, r);
-        ctx.arcTo(x + width, y + height, x, y + height, r);
-        ctx.arcTo(x, y + height, x, y, r);
-        ctx.arcTo(x, y, x + width, y, r);
-        ctx.closePath();
-        ctx.fillStyle = 'white';
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = 'black';
-        ctx.font = '16px Arial';
-
-        const lines = text.split('\n');
-        const lineHeight = 20;
-        lines.forEach((line, index) => {
-            ctx.fillText(line, x + 10, y + 20 + (index * lineHeight));
-        });
-
-        // Draw the tail of the speech bubble
-        ctx.beginPath();
-        ctx.ellipse(x + width / 2 - 65, y + height + 30, 5, 2.5, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(x + width / 2 - 50, y + height + 20, 10, 5, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(x + width / 2 - 25, y + height + 10, 15, 7, 0, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    function animate() {
-        clear();
-        drawBackground();
-        drawPlatforms();
-        drawHero();
-        drawEnemies();
-        drawCoins();
-        drawGoal();
-        drawLives();
-        drawCoinsCollected();
-        drawSpeedBoosts();
-        drawSpeechBubble(ctx, hero.x + 10, hero.y - 80, 185, 50, 10, text);
-        requestAnimationFrame(animate);
-    }
-
-    animate();
-    setTimeout(() => {
-        callback();
-    }, duration);
-}
