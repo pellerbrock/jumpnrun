@@ -464,7 +464,7 @@ function drawBoss() {
         if (Math.abs(hero.x - (boss.x - scrollOffset)) < 200 && !boss.messageDisplayed && !bossSpeechBubbleVisible) {
             boss.messageDisplayed = true;
             bossSpeechBubbleVisible = true;
-            drawSpeechBubble(ctx, boss.x - scrollOffset - 75, boss.y - 120, 220, 90, 10, "I am so sad and so alone,\nnobody is like me");
+            drawSpeechBubble(ctx, boss.x - scrollOffset - 75, boss.y - 120, 260, 90, 10, "I’m so stressed and nobody\nis as ambitious as I am");
             bossSpeechBubbleTimer = setTimeout(() => {
                 bossSpeechBubbleVisible = false;
                 heroSpeechBubbleVisible = true;
@@ -477,7 +477,7 @@ function drawBoss() {
 }
 
 function drawHeroSpeechBubble() {
-    drawThoughtBubble(ctx, hero.x + 0, hero.y - 100, 260, 35, 10, "I should pity him again and stay...");
+    drawThoughtBubble(ctx, hero.x + 0, hero.y - 100, 170, 35, 10, " I should leave him...");
 }
 
 // Function to draw speech bubble (same as previously defined)
@@ -842,7 +842,7 @@ function gameLoop() {
     drawCoinsCollected();
     drawSpeedBoosts();
     if (bossSpeechBubbleVisible) {
-        drawSpeechBubble(ctx, currentLevel.boss.x - scrollOffset - 145, currentLevel.boss.y - 85, 205, 35, 10, "Focus on your happiness!");
+        drawSpeechBubble(ctx, currentLevel.boss.x - scrollOffset - 145, currentLevel.boss.y - 85, 215, 55, 10, "I’m so stressed and nobody\nis as ambitious as I am");
     }
     if (heroSpeechBubbleVisible) {
         drawHeroSpeechBubble();
