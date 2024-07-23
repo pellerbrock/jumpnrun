@@ -385,6 +385,10 @@ backToMenuButton.addEventListener('click', () => {
 });
 
 mobileStartButton.addEventListener('click', () => {
+    startGame()
+});
+
+const startGame = () => {
     gameStarted = true;
     mobileStartButton.style.display = 'none';
     mobileControls.style.display = 'flex';
@@ -392,7 +396,7 @@ mobileStartButton.addEventListener('click', () => {
         backgroundMusic.play();
     }
     gameLoop();
-});
+}
 
 function resetToMainMenu() {
     gameStarted = false;
@@ -928,6 +932,10 @@ document.addEventListener('keydown', (e) => {
         navigateMenu(e, menus.levelSelection);
     } else if (document.getElementById('settingsScreen').style.display === 'flex') {
         navigateMenu(e, menus.settingsScreen);
+    }else{
+        if(e.key === 'Enter'){
+            startGame()
+        }
     }
 });
 
